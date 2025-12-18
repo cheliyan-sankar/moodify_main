@@ -14,13 +14,6 @@ function ProgressContent() {
   const { user } = useAuth();
   const [progress, setProgress] = useState<UserProgress | null>(null);
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (user) {
-      fetchProgress();
-    }
-  }, [user, fetchProgress]);
-
   const fetchProgress = useCallback(async () => {
     if (!user) return;
     setLoading(true);
@@ -28,6 +21,12 @@ function ProgressContent() {
     setProgress(data);
     setLoading(false);
   }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      fetchProgress();
+    }
+  }, [user, fetchProgress]);
 
   if (loading) {
     return (
