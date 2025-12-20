@@ -24,6 +24,7 @@ export default function PhysicalGroundingGame() {
   const [continueLocked, setContinueLocked] = useState(false);
   const [lockTimeLeft, setLockTimeLeft] = useState(0);
   const [completed, setCompleted] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
   const [progress, setProgress] = useState(0);
   const [smoothProgress, setSmoothProgress] = useState(0);
   const animRef = useRef<number | null>(null);
@@ -31,36 +32,77 @@ export default function PhysicalGroundingGame() {
 
   const { speak } = useVoiceGuide();
 
-  const instructionText = 'Gently shift your body weight to the left… then to the right… then come back to the center.';
+  const steps = [
+    {
+      title: 'Step 1 - Splash Cold Water',
+      instruction:
+        'If available, run cold water on your wrists or splash your face. The sudden cold activates your parasympathetic nervous system and brings your awareness sharply into the present moment. This sensory jolt interrupts stress spirals.',
+    },
+    {
+      title: 'Step 2 - Touch Textured Objects',
+      instruction:
+        'Hold something with a distinct texture: sandpaper, rough fabric, tree bark, ice cubes, or velvet. Feel the sensation fully as your fingers explore. Tactile engagement anchors your mind to physical sensation and away from anxious thoughts.',
+    },
+    {
+      title: 'Step 3 - Apply Chest Pressure',
+      instruction:
+        'Place your hand on your chest and apply gentle pressure. Feel your heartbeat beneath your fingers. This gentle pressure activates your vagus nerve and signals safety to your body, creating a sense of calm reassurance.',
+    },
+    {
+      title: 'Step 4 - Engage Your Muscles',
+      instruction:
+        'Tense and release different muscle groups: make tight fists, flex your legs, tense your shoulders. Hold the tension for a few seconds, then release. This progressive muscle relaxation helps discharge trapped stress and restores your sense of agency over your body.',
+    },
+    {
+      title: 'Step 5 - Release and Ground',
+      instruction:
+        'Complete the sequence by standing with both feet firmly planted on the ground. Feel all four corners of your feet pressing down. Take three deep breaths and notice your body\'s stability and strength.',
+    },
+  ];
 
   useEffect(() => {
-    // Handle the locked 8-second window after starting the activity.
+    // Handle the locked 8-second window after starting each step.
     let interval: NodeJS.Timeout | undefined;
 
     if (isRunning && !completed) {
-      // initialize lock if needed
-      if (lockTimeLeft === 0) {
+      // initialize lock for the current step if needed
+      if (lockTimeLeft === 0 && !continueLocked) {
         setContinueLocked(true);
         setLockTimeLeft(8);
         lockStartRef.current = performance.now();
-        setSmoothProgress(0);
-        setProgress(0);
-        if (voiceEnabled) speak(instructionText);
 
-        // start smooth animation for progress (8s)
-        const step = (ts: number) => {
+        if (voiceEnabled && steps[currentStep]) {
+          speak(steps[currentStep].instruction);
+        }
+
+        const totalSteps = steps.length;
+        const stepIndex = currentStep;
+        const stepDurationMs = 8000;
+
+        // start smooth animation for this step (8s)
+        const animate = (ts: number) => {
           const start = lockStartRef.current ?? ts;
           const elapsed = ts - start;
-          const pct = Math.min(100, (elapsed / 8000) * 100);
-          setSmoothProgress(pct);
-          setProgress(Math.round(pct));
-          if (pct < 100 && isRunning && !completed) {
-            animRef.current = requestAnimationFrame(step);
+          const stepProgress = Math.min(1, elapsed / stepDurationMs);
+          const base = (stepIndex / totalSteps) * 100;
+          const range = 100 / totalSteps;
+          const overallPct = Math.min(100, base + stepProgress * range);
+
+          setSmoothProgress(overallPct);
+          setProgress(Math.round(overallPct));
+
+          if (stepProgress < 1 && isRunning && !completed) {
+            animRef.current = requestAnimationFrame(animate);
           } else {
             animRef.current = null;
           }
         };
-        animRef.current = requestAnimationFrame(step);
+
+        if (animRef.current) {
+          cancelAnimationFrame(animRef.current);
+          animRef.current = null;
+        }
+        animRef.current = requestAnimationFrame(animate);
       }
 
       if (lockTimeLeft > 0) {
@@ -68,14 +110,6 @@ export default function PhysicalGroundingGame() {
           setLockTimeLeft(t => {
             if (t <= 1) {
               setContinueLocked(false);
-              setLockTimeLeft(0);
-              // ensure final progress is set
-              setSmoothProgress(100);
-              setProgress(100);
-              if (animRef.current) {
-                cancelAnimationFrame(animRef.current);
-                animRef.current = null;
-              }
               return 0;
             }
             return t - 1;
@@ -92,7 +126,7 @@ export default function PhysicalGroundingGame() {
       }
       lockStartRef.current = null;
     };
-  }, [isRunning, lockTimeLeft, completed, voiceEnabled, speak]);
+  }, [isRunning, lockTimeLeft, completed, voiceEnabled, speak, continueLocked, currentStep]);
 
   useEffect(() => {
     // progress reflects the locked countdown (8s) while running
@@ -105,21 +139,39 @@ export default function PhysicalGroundingGame() {
       setProgress(0);
       setSmoothProgress(0);
     }
-  }, [isRunning, lockTimeLeft, completed]);
+  }, [isRunning, completed]);
 
   const handleReset = () => {
     setIsRunning(false);
     setContinueLocked(false);
     setLockTimeLeft(0);
     setCompleted(false);
+    setCurrentStep(0);
     setProgress(0);
+    setSmoothProgress(0);
+    if (animRef.current) {
+      cancelAnimationFrame(animRef.current);
+      animRef.current = null;
+    }
   };
 
   const handleContinue = () => {
     if (continueLocked || !isRunning) return;
-    setCompleted(true);
-    setIsRunning(false);
-    if (voiceEnabled) speak('Notice the stability and support beneath you.');
+
+    // Advance through steps; lock applies to every step
+    if (currentStep < steps.length - 1) {
+      setCurrentStep(prev => Math.min(prev + 1, steps.length - 1));
+    } else {
+      setCompleted(true);
+      setIsRunning(false);
+      setContinueLocked(false);
+      setLockTimeLeft(0);
+      setProgress(100);
+      setSmoothProgress(100);
+      if (voiceEnabled) {
+        speak('Notice the stability and support beneath you.');
+      }
+    }
   };
 
   return (
@@ -155,7 +207,13 @@ export default function PhysicalGroundingGame() {
                 </div>
                 <div className="text-center">
                   <div className="text-4xl font-bold text-teal-600">{isRunning && !completed ? lockTimeLeft : completed ? '✓' : ''}</div>
-                  <div className="text-sm text-teal-700 mt-2">{isRunning && !completed ? 'seconds' : completed ? 'Complete' : ''}</div>
+                  <div className="text-sm text-teal-700 mt-2">
+                    {isRunning && !completed
+                      ? 'seconds'
+                      : completed
+                        ? 'Complete'
+                        : 'Ready'}
+                  </div>
                 </div>
               </div>
             </div>
@@ -163,9 +221,27 @@ export default function PhysicalGroundingGame() {
             {/* Current Step */}
             <div className="mb-8 text-center">
               <h2 className="text-2xl font-bold text-primary mb-2">
-                {completed ? '✓ Complete' : isRunning ? 'Physical Grounding' : 'Ready to Begin'}
+                {completed
+                  ? '✓ All Steps Complete'
+                  : isRunning && steps[currentStep]
+                    ? steps[currentStep].title
+                    : 'Ready to Begin'}
               </h2>
-              <p className="text-muted-foreground">{isRunning && !completed ? instructionText : completed ? 'Notice the stability and support beneath you.' : ''}</p>
+              {isRunning && !completed && (
+                <>
+                  <p className="text-muted-foreground mb-2">
+                    {steps[currentStep]?.instruction}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    Step {currentStep + 1} of {steps.length}
+                  </p>
+                </>
+              )}
+              {completed && (
+                <p className="text-muted-foreground">
+                  Notice the stability and support beneath you.
+                </p>
+              )}
             </div>
 
             {/* Progress Bar */}
@@ -185,14 +261,31 @@ export default function PhysicalGroundingGame() {
             {/* Controls */}
             <div className="flex gap-2 sm:gap-4 justify-center items-center mb-8 flex-wrap">
               <Button
-                onClick={() => setIsRunning(prev => !prev)}
+                onClick={() => {
+                  if (!isRunning) {
+                    // Start or resume the sequence
+                    setCompleted(false);
+                    if (completed) {
+                      // fresh run
+                      setCurrentStep(0);
+                      setLockTimeLeft(0);
+                      setContinueLocked(false);
+                      setSmoothProgress(0);
+                      setProgress(0);
+                    }
+                    setIsRunning(true);
+                  } else {
+                    // Pause the sequence
+                    setIsRunning(false);
+                  }
+                }}
                 size="lg"
                 className="bg-gradient-to-r from-teal-500 to-cyan-500 hover:opacity-90 flex-1 sm:flex-none min-w-fit"
               >
                 {isRunning ? (
                   <>
                     <Pause className="w-4 h-4 mr-2" />
-                    In Progress
+                    Pause
                   </>
                 ) : (
                   <>
