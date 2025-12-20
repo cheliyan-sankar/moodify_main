@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { AppFooter } from "@/components/app-footer";
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -8,7 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ArrowLeft, Play, Pause, RotateCcw, Volume2, VolumeX } from 'lucide-react';
 import { useVoiceGuide } from '@/hooks/use-breathing-guide';
 
-export default function PhysicalGrounding() {
+export default function PhysicalGroundingGame() {
   const router = useRouter();
   
   const handleBack = () => {
@@ -21,66 +21,61 @@ export default function PhysicalGrounding() {
 
   const [isRunning, setIsRunning] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(true);
-  const [currentStep, setCurrentStep] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(0);
+  const [continueLocked, setContinueLocked] = useState(false);
+  const [lockTimeLeft, setLockTimeLeft] = useState(0);
+  const [completed, setCompleted] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [smoothProgress, setSmoothProgress] = useState(0);
+  const animRef = useRef<number | null>(null);
+  const lockStartRef = useRef<number | null>(null);
 
   const { speak } = useVoiceGuide();
 
-  const steps = [
-    {
-      title: 'Splash Cold Water',
-      instruction: 'If available, run cold water on your wrists or splash your face. Feel the shock awaken your senses.',
-      duration: 15,
-    },
-    {
-      title: 'Touch Textured Objects',
-      instruction: 'Hold something textured: sandpaper, rough fabric, tree bark, ice cubes. Feel the sensation fully.',
-      duration: 20,
-    },
-    {
-      title: 'Apply Chest Pressure',
-      instruction: 'Place your hand on your chest and apply gentle pressure. Feel your heartbeat. You are alive, you are here.',
-      duration: 20,
-    },
-    {
-      title: 'Engage Your Muscles',
-      instruction: 'Tense and release muscle groups: fists, legs, shoulders. Feel the release of tension from your body.',
-      duration: 20,
-    },
-    {
-      title: 'Feel Grounded',
-      instruction: 'Your body is present in this moment. You are grounded, safe, and in control.',
-      duration: 10,
-    },
-  ];
+  const instructionText = 'Gently shift your body weight to the left… then to the right… then come back to the center.';
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    // Handle the locked 8-second window after starting the activity.
+    let interval: NodeJS.Timeout | undefined;
 
-    if (isRunning && currentStep < steps.length) {
-      const step = steps[currentStep];
+    if (isRunning && !completed) {
+      // initialize lock if needed
+      if (lockTimeLeft === 0) {
+        setContinueLocked(true);
+        setLockTimeLeft(8);
+        lockStartRef.current = performance.now();
+        setSmoothProgress(0);
+        setProgress(0);
+        if (voiceEnabled) speak(instructionText);
 
-      if (timeLeft === 0) {
-        setTimeLeft(step.duration);
-        if (voiceEnabled) {
-          speak(step.instruction);
-        }
-      } else {
+        // start smooth animation for progress (8s)
+        const step = (ts: number) => {
+          const start = lockStartRef.current ?? ts;
+          const elapsed = ts - start;
+          const pct = Math.min(100, (elapsed / 8000) * 100);
+          setSmoothProgress(pct);
+          setProgress(Math.round(pct));
+          if (pct < 100 && isRunning && !completed) {
+            animRef.current = requestAnimationFrame(step);
+          } else {
+            animRef.current = null;
+          }
+        };
+        animRef.current = requestAnimationFrame(step);
+      }
+
+      if (lockTimeLeft > 0) {
         interval = setInterval(() => {
-          setTimeLeft(t => {
-            if (t === 1) {
-              setCurrentStep(prev => {
-                if (prev + 1 < steps.length) {
-                  return prev + 1;
-                } else {
-                  setIsRunning(false);
-                  if (voiceEnabled) {
-                    speak('Physical grounding exercise complete. You are grounded and calm.');
-                  }
-                  return prev;
-                }
-              });
+          setLockTimeLeft(t => {
+            if (t <= 1) {
+              setContinueLocked(false);
+              setLockTimeLeft(0);
+              // ensure final progress is set
+              setSmoothProgress(100);
+              setProgress(100);
+              if (animRef.current) {
+                cancelAnimationFrame(animRef.current);
+                animRef.current = null;
+              }
               return 0;
             }
             return t - 1;
@@ -89,20 +84,42 @@ export default function PhysicalGrounding() {
       }
     }
 
-    return () => clearInterval(interval);
-  }, [isRunning, timeLeft, currentStep, steps, voiceEnabled, speak]);
+    return () => {
+      if (interval) clearInterval(interval);
+      if (animRef.current) {
+        cancelAnimationFrame(animRef.current);
+        animRef.current = null;
+      }
+      lockStartRef.current = null;
+    };
+  }, [isRunning, lockTimeLeft, completed, voiceEnabled, speak]);
 
   useEffect(() => {
-    const totalDuration = steps.reduce((sum, s) => sum + s.duration, 0);
-    const elapsed = steps.slice(0, currentStep).reduce((sum, s) => sum + s.duration, 0);
-    setProgress(((elapsed + (steps[currentStep].duration - timeLeft)) / totalDuration) * 100);
-  }, [currentStep, timeLeft, steps]);
+    // progress reflects the locked countdown (8s) while running
+    if (completed) {
+      setProgress(100);
+      setSmoothProgress(100);
+      return;
+    }
+    if (!isRunning) {
+      setProgress(0);
+      setSmoothProgress(0);
+    }
+  }, [isRunning, lockTimeLeft, completed]);
 
   const handleReset = () => {
     setIsRunning(false);
-    setCurrentStep(0);
-    setTimeLeft(0);
+    setContinueLocked(false);
+    setLockTimeLeft(0);
+    setCompleted(false);
     setProgress(0);
+  };
+
+  const handleContinue = () => {
+    if (continueLocked || !isRunning) return;
+    setCompleted(true);
+    setIsRunning(false);
+    if (voiceEnabled) speak('Notice the stability and support beneath you.');
   };
 
   return (
@@ -115,7 +132,7 @@ export default function PhysicalGrounding() {
             </Button>
           </div>
           <div className="text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold text-teal-600">Physical Grounding</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-teal-600">Physical Grounding Game (Weight Shift Reset)</h1>
           </div>
         </div>
       </nav>
@@ -125,7 +142,7 @@ export default function PhysicalGrounding() {
           <CardContent className="p-12">
             {/* Title and Tagline */}
             <div className="text-center mb-12">
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Physical Grounding</h1>
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Physical Grounding Game (Weight Shift Reset)</h1>
               <p className="text-sm text-gray-600">A <strong>SOMATIC AND COGNITIVE BEHAVIORAL THERAPY (CBT)-BASED GROUNDING APPROACH</strong> that uses physical awareness to bring you back to the present moment.</p>
             </div>
 
@@ -137,8 +154,8 @@ export default function PhysicalGrounding() {
                   <div className="absolute inset-8 border-2 border-teal-400 rounded-lg" />
                 </div>
                 <div className="text-center">
-                  <div className="text-4xl font-bold text-teal-600">{timeLeft}</div>
-                  <div className="text-sm text-teal-700 mt-2">seconds</div>
+                  <div className="text-4xl font-bold text-teal-600">{isRunning && !completed ? lockTimeLeft : completed ? '✓' : ''}</div>
+                  <div className="text-sm text-teal-700 mt-2">{isRunning && !completed ? 'seconds' : completed ? 'Complete' : ''}</div>
                 </div>
               </div>
             </div>
@@ -146,17 +163,9 @@ export default function PhysicalGrounding() {
             {/* Current Step */}
             <div className="mb-8 text-center">
               <h2 className="text-2xl font-bold text-primary mb-2">
-                {isRunning && currentStep < steps.length
-                  ? steps[currentStep].title
-                  : currentStep >= steps.length
-                    ? '✓ Complete'
-                    : 'Ready to Begin'}
+                {completed ? '✓ Complete' : isRunning ? 'Physical Grounding' : 'Ready to Begin'}
               </h2>
-              {isRunning && currentStep < steps.length && (
-                <p className="text-muted-foreground">
-                  Step {currentStep + 1} of {steps.length}
-                </p>
-              )}
+              <p className="text-muted-foreground">{isRunning && !completed ? instructionText : completed ? 'Notice the stability and support beneath you.' : ''}</p>
             </div>
 
             {/* Progress Bar */}
@@ -167,8 +176,8 @@ export default function PhysicalGrounding() {
               </div>
               <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-teal-400 to-cyan-500 transition-all duration-300"
-                  style={{ width: `${progress}%` }}
+                  className="h-full bg-gradient-to-r from-teal-400 to-cyan-500"
+                  style={{ width: `${completed ? 100 : smoothProgress}%`, transition: 'width 120ms linear' }}
                 />
               </div>
             </div>
@@ -176,14 +185,14 @@ export default function PhysicalGrounding() {
             {/* Controls */}
             <div className="flex gap-2 sm:gap-4 justify-center items-center mb-8 flex-wrap">
               <Button
-                onClick={() => setIsRunning(!isRunning)}
+                onClick={() => setIsRunning(prev => !prev)}
                 size="lg"
                 className="bg-gradient-to-r from-teal-500 to-cyan-500 hover:opacity-90 flex-1 sm:flex-none min-w-fit"
               >
                 {isRunning ? (
                   <>
                     <Pause className="w-4 h-4 mr-2" />
-                    Pause
+                    In Progress
                   </>
                 ) : (
                   <>
@@ -200,6 +209,14 @@ export default function PhysicalGrounding() {
               >
                 <RotateCcw className="w-4 h-4 mr-2" />
                 Reset
+              </Button>
+              <Button
+                onClick={handleContinue}
+                disabled={continueLocked || !isRunning || completed}
+                size="lg"
+                className="sm:flex-none"
+              >
+                {continueLocked ? `Hold (${lockTimeLeft}s)` : 'Continue'}
               </Button>
               <Button
                 onClick={() => setVoiceEnabled(!voiceEnabled)}

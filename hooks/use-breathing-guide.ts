@@ -77,27 +77,51 @@ export function useBreathingGuide(config: BreathingGuideConfig) {
 
 export function useVoiceGuide() {
   const [isSpeaking, setIsSpeaking] = useState(false);
-
   const speak = (text: string, priority: 'normal' | 'urgent' = 'normal') => {
     // Cancel any ongoing speech
     window.speechSynthesis.cancel();
 
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 0.9;
-    utterance.pitch = 1;
-    utterance.volume = 0.8;
+    // Prefer slower, calming delivery
+    const baseRate = 0.75; // slower to avoid rushing
+    const basePitch = 0.95;
+    const baseVolume = 0.9;
 
-    // Use a calm voice (preferably female, but system default is fine)
+    // Normalize ellipses to create clearer pauses for the TTS engine
+    const normalizedText = text.replace(/…/g, '...');
+
+    // Split on ellipses or sentence boundaries to let the engine breathe
+    const segments = normalizedText.split(/\.\.\.|\n|\.|\?|-{2,}/).map(s => s.trim()).filter(Boolean);
+
     const voices = window.speechSynthesis.getVoices();
-    const calmVoice = voices.find((v) => v.name.includes('Google US English Female')) || voices[0];
-    if (calmVoice) {
-      utterance.voice = calmVoice;
-    }
+    const calmVoice = voices.find((v) => /female|woman|zira|samantha|google us english female/i.test(v.name))
+      || voices.find((v) => v.lang && v.lang.startsWith('en'))
+      || voices[0];
 
-    utterance.onstart = () => setIsSpeaking(true);
-    utterance.onend = () => setIsSpeaking(false);
+    let idx = 0;
 
-    window.speechSynthesis.speak(utterance);
+    const speakNext = () => {
+      if (idx >= segments.length) return;
+      const part = segments[idx];
+      const utterance = new SpeechSynthesisUtterance(part);
+      utterance.rate = baseRate;
+      utterance.pitch = basePitch;
+      utterance.volume = baseVolume;
+      if (calmVoice) utterance.voice = calmVoice;
+
+      utterance.onstart = () => setIsSpeaking(true);
+      utterance.onend = () => {
+        idx += 1;
+        setIsSpeaking(false);
+        // short pause before next segment
+        if (idx < segments.length) {
+          setTimeout(speakNext, 400);
+        }
+      };
+
+      window.speechSynthesis.speak(utterance);
+    };
+
+    speakNext();
   };
 
   const stop = () => {

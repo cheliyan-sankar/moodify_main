@@ -50,6 +50,7 @@ interface Game {
   color_from: string;
   color_to: string;
   cover_image_url?: string;
+  is_popular?: boolean;
 }
 
 interface Testimonial {
@@ -1275,6 +1276,19 @@ export default function AdminDashboard() {
                             ✓ Image ready to save
                           </div>
                         )}
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">Most Popular</label>
+                        <div className="flex items-center gap-2">
+                          <input
+                            id="is_popular"
+                            type="checkbox"
+                            checked={!!selectedGame.is_popular}
+                            onChange={(e) => setSelectedGame({...selectedGame, is_popular: e.target.checked})}
+                          />
+                          <label htmlFor="is_popular" className="text-sm text-muted-foreground">Pin this game as Most Popular</label>
+                        </div>
                       </div>
 
                       {selectedGame.cover_image_url && (

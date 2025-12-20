@@ -108,6 +108,31 @@ const gameDetailsMap: Readonly<{ [key: string]: GameDetails }> = {
   }
 };
 
+function GameCover({ src, title, wrapperClass = '', imgClass = '' }: { src?: string; title?: string; wrapperClass?: string; imgClass?: string }) {
+  const [failed, setFailed] = useState(false);
+
+  if (src && !failed) {
+    return (
+      <div className={wrapperClass}>
+        <img
+          src={src}
+          alt={title}
+          className={imgClass}
+          onError={() => setFailed(true)}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className={`${wrapperClass} bg-gray-100 flex items-center justify-center`}>
+      <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-600">
+        {title ? title.charAt(0).toUpperCase() : 'G'}
+      </div>
+    </div>
+  );
+}
+
 export function GamesSection() {
   const { user } = useAuth();
   const [games, setGames] = useState<Game[]>([]);
@@ -299,12 +324,7 @@ export function GamesSection() {
               style={{ animationDelay: `${index * 100}ms` }}
               onClick={() => handleCardClick(game)}
             >
-            <div
-              className="h-2 transition-all duration-300"
-              style={{
-                background: `linear-gradient(to right, ${parsedFrom}, ${parsedTo})`,
-              }}
-            />
+              {/* Removed decorative gradient bar to prioritize cover images */}
 
             {user && (
               <Button
@@ -329,26 +349,27 @@ export function GamesSection() {
               </Button>
             )}
 
-            {game.cover_image_url ? (
-              <div className="relative h-28 sm:h-32 md:h-36 overflow-hidden transition-transform duration-300 group-hover:scale-105">
-                <img
-                  src={game.cover_image_url}
-                  alt={game.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            ) : (
+            <div className="relative">
               <div
-                className="relative h-28 sm:h-32 md:h-36 flex items-center justify-center transition-transform duration-300 group-hover:scale-105"
+                className="h-12 w-full"
                 style={{
-                  background: `linear-gradient(135deg, ${parsedFrom}, ${parsedTo})`,
+                  background: `linear-gradient(90deg, ${parsedFrom}, ${parsedTo})`,
                 }}
-              >
-                <div className="text-5xl sm:text-6xl md:text-7xl transform transition-transform duration-300 group-hover:scale-110">
-                  {getIconComponent(game.icon)}
+              />
+
+              <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 top-10 z-20">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white/90 dark:bg-gray-800/80 flex items-center justify-center shadow-md border">
+                  <div className="text-2xl sm:text-3xl">{getIconComponent(game.icon)}</div>
                 </div>
               </div>
-            )}
+
+              <GameCover
+                src={game.cover_image_url}
+                title={game.title}
+                wrapperClass="relative h-28 sm:h-32 md:h-36 overflow-hidden transition-transform duration-300 group-hover:scale-105 mt-2"
+                imgClass="w-full h-full object-cover"
+              />
+            </div>
 
             <CardContent className="p-4 sm:p-5 md:p-6">
               <div className="flex items-start justify-between mb-2">
@@ -398,14 +419,12 @@ export function GamesSection() {
           return (
           <>
             <DialogHeader>
-              <div
-                className="w-16 sm:w-20 h-16 sm:h-20 rounded-2xl mx-auto mb-4 flex items-center justify-center"
-                style={{
-                  background: `linear-gradient(135deg, ${dialogParsedFrom}, ${dialogParsedTo})`,
-                }}
-              >
-                <span className="text-4xl sm:text-5xl">{getIconComponent(selectedGame.icon)}</span>
-              </div>
+              <GameCover
+                src={selectedGame.cover_image_url}
+                title={selectedGame.title}
+                wrapperClass="w-16 sm:w-20 h-16 sm:h-20 rounded-2xl mx-auto mb-4 overflow-hidden"
+                imgClass="w-full h-full object-cover rounded-2xl"
+              />
               <DialogTitle className="text-2xl sm:text-3xl text-center line-clamp-2" style={{ color: '#3C1F71' }}>
                 {selectedGame.title}
               </DialogTitle>
