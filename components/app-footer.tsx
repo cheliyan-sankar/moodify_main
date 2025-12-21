@@ -55,6 +55,11 @@ export function AppFooter() {
             <h3 className="font-semibold text-primary mb-4">Resources</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
+                <Link href="/about" className="hover:text-primary transition-colors">
+                  About
+                </Link>
+              </li>
+              <li>
                 <Link href="/discover" className="hover:text-primary transition-colors">
                   Discover
                 </Link>
@@ -81,24 +86,22 @@ export function AppFooter() {
             <h3 className="font-semibold text-primary mb-4">Support</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <a href="mailto:support@moodlift.com" className="hover:text-primary transition-colors">
+                <Link href="/contact" className="hover:text-primary transition-colors">
                   Contact Us
+                </Link>
+              </li>
+              <li>
+                <a
+                  href="https://hexpertify-blog-sigma.vercel.app/"
+                  className="hover:text-primary transition-colors"
+                >
+                  Blog
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-primary transition-colors">
-                  Help Center
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-primary transition-colors">
+                <Link href="/privacy-policy" className="hover:text-primary transition-colors">
                   Privacy Policy
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-primary transition-colors">
-                  Terms of Service
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 
 export interface BreathingCycle {
   phase: 'inhale' | 'hold' | 'exhale' | 'rest';
@@ -77,37 +77,54 @@ export function useBreathingGuide(config: BreathingGuideConfig) {
 
 export function useVoiceGuide() {
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const speak = (text: string, priority: 'normal' | 'urgent' = 'normal') => {
+  const speak = useCallback((text: string, priority: 'normal' | 'urgent' = 'normal') => {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
 
-    // Cancel any ongoing speech before starting a new calm utterance
     window.speechSynthesis.cancel();
 
-    const utterance = new SpeechSynthesisUtterance(text.replace(/…/g, '...'));
-    utterance.rate = 0.75; // slower, more grounding
-    utterance.pitch = 0.95;
-    utterance.volume = 0.9;
+    const speakWithVoice = () => {
+      const utterance = new SpeechSynthesisUtterance(text.replace(/…/g, '...'));
+      utterance.rate = 0.75;
+      utterance.pitch = 0.95;
+      utterance.volume = 0.9;
 
-    const voices = window.speechSynthesis.getVoices();
-    const calmVoice =
-      voices.find((v) => /female|woman|zira|samantha|google us english female/i.test(v.name)) ||
-      voices.find((v) => v.lang && v.lang.startsWith('en')) ||
-      voices[0];
+      let voices = window.speechSynthesis.getVoices();
+      
+      // Prioritize female voices explicitly, filtering out male voices
+      const femaleVoice =
+        voices.find((v) => /female|woman|zira|samantha|google.*female|microsoft zira|kate|victoria|karen|moira|fiona/i.test(v.name) && !/\bmale\b(?!.*female)/i.test(v.name)) ||
+        voices.find((v) => v.lang && v.lang.startsWith('en-') && (/female|woman/i.test(v.name) || /zira|samantha|kate|victoria|karen|moira|fiona/i.test(v.name))) ||
+        voices.find((v) => v.lang && v.lang.startsWith('en') && v.name.toLowerCase().includes('f')) ||
+        voices.find((v) => v.lang && v.lang.startsWith('en'));
 
-    if (calmVoice) {
-      utterance.voice = calmVoice;
+      if (femaleVoice) {
+        utterance.voice = femaleVoice;
+      }
+
+      utterance.onstart = () => setIsSpeaking(true);
+      utterance.onend = () => setIsSpeaking(false);
+
+      window.speechSynthesis.speak(utterance);
+    };
+
+    // Ensure voices are loaded before speaking
+    let voices = window.speechSynthesis.getVoices();
+    if (voices.length === 0) {
+      // Voices not loaded yet, wait for them
+      window.speechSynthesis.onvoiceschanged = () => {
+        speakWithVoice();
+      };
+    } else {
+      speakWithVoice();
     }
+  }, []);
 
-    utterance.onstart = () => setIsSpeaking(true);
-    utterance.onend = () => setIsSpeaking(false);
-
-    window.speechSynthesis.speak(utterance);
-  };
-
-  const stop = () => {
-    window.speechSynthesis.cancel();
+  const stop = useCallback(() => {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
     setIsSpeaking(false);
-  };
+  }, []);
 
   return { speak, stop, isSpeaking };
 }

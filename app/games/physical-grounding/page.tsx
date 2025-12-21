@@ -1,15 +1,17 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { AppFooter } from "@/components/app-footer";
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowLeft, Play, Pause, RotateCcw, Volume2, VolumeX } from 'lucide-react';
+import { Play, Pause, RotateCcw, Volume2, VolumeX } from 'lucide-react';
 import { useVoiceGuide } from '@/hooks/use-breathing-guide';
 
 export default function PhysicalGroundingGame() {
   const router = useRouter();
+
+  const STEP_SECONDS = 15;
   
   const handleBack = () => {
     if (window.history.length > 1) {
@@ -21,157 +23,80 @@ export default function PhysicalGroundingGame() {
 
   const [isRunning, setIsRunning] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(true);
-  const [continueLocked, setContinueLocked] = useState(false);
   const [lockTimeLeft, setLockTimeLeft] = useState(0);
   const [completed, setCompleted] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
-  const [progress, setProgress] = useState(0);
-  const [smoothProgress, setSmoothProgress] = useState(0);
-  const animRef = useRef<number | null>(null);
-  const lockStartRef = useRef<number | null>(null);
 
-  const { speak } = useVoiceGuide();
+  const { speak, stop } = useVoiceGuide();
 
   const steps = [
     {
       title: 'Step 1 - Splash Cold Water',
       instruction:
-        'If available, run cold water on your wrists or splash your face. The sudden cold activates your parasympathetic nervous system and brings your awareness sharply into the present moment. This sensory jolt interrupts stress spirals.',
+        'If available, run cold water on your wrists or splash your face. The cold activates your calming response and brings attention into the present, interrupting stress.',
     },
     {
       title: 'Step 2 - Touch Textured Objects',
       instruction:
-        'Hold something with a distinct texture: sandpaper, rough fabric, tree bark, ice cubes, or velvet. Feel the sensation fully as your fingers explore. Tactile engagement anchors your mind to physical sensation and away from anxious thoughts.',
+        'Hold something with a distinct texture (rough fabric, bark, ice, or velvet). Notice the feel as your fingers explore — tactile sensation anchors you in the present.',
     },
     {
       title: 'Step 3 - Apply Chest Pressure',
       instruction:
-        'Place your hand on your chest and apply gentle pressure. Feel your heartbeat beneath your fingers. This gentle pressure activates your vagus nerve and signals safety to your body, creating a sense of calm reassurance.',
+        'Place a hand on your chest and apply gentle pressure; feel your heartbeat. This soothes your nervous system and signals safety.',
     },
     {
       title: 'Step 4 - Engage Your Muscles',
       instruction:
-        'Tense and release different muscle groups: make tight fists, flex your legs, tense your shoulders. Hold the tension for a few seconds, then release. This progressive muscle relaxation helps discharge trapped stress and restores your sense of agency over your body.',
+        'Tense then release muscle groups (fists, legs, shoulders). Hold briefly, then let go — this releases tension and restores a sense of control.',
     },
     {
       title: 'Step 5 - Release and Ground',
       instruction:
-        'Complete the sequence by standing with both feet firmly planted on the ground. Feel all four corners of your feet pressing down. Take three deep breaths and notice your body\'s stability and strength.',
+        'Finish by standing with feet firmly planted. Feel the ground under all corners of your feet, take three deep breaths, and notice your stability.',
     },
   ];
 
+  // Effect: countdown for the 15-second window. Pausing preserves `lockTimeLeft`.
   useEffect(() => {
-    // Handle the locked 8-second window after starting each step.
-    let interval: NodeJS.Timeout | undefined;
+    if (!isRunning || completed || lockTimeLeft <= 0) return;
 
-    if (isRunning && !completed) {
-      // initialize lock for the current step if needed
-      if (lockTimeLeft === 0 && !continueLocked) {
-        setContinueLocked(true);
-        setLockTimeLeft(8);
-        lockStartRef.current = performance.now();
-
-        if (voiceEnabled && steps[currentStep]) {
-          speak(steps[currentStep].instruction);
-        }
-
-        const totalSteps = steps.length;
-        const stepIndex = currentStep;
-        const stepDurationMs = 8000;
-
-        // start smooth animation for this step (8s)
-        const animate = (ts: number) => {
-          const start = lockStartRef.current ?? ts;
-          const elapsed = ts - start;
-          const stepProgress = Math.min(1, elapsed / stepDurationMs);
-          const base = (stepIndex / totalSteps) * 100;
-          const range = 100 / totalSteps;
-          const overallPct = Math.min(100, base + stepProgress * range);
-
-          setSmoothProgress(overallPct);
-          setProgress(Math.round(overallPct));
-
-          if (stepProgress < 1 && isRunning && !completed) {
-            animRef.current = requestAnimationFrame(animate);
-          } else {
-            animRef.current = null;
-          }
-        };
-
-        if (animRef.current) {
-          cancelAnimationFrame(animRef.current);
-          animRef.current = null;
-        }
-        animRef.current = requestAnimationFrame(animate);
-      }
-
-      if (lockTimeLeft > 0) {
-        interval = setInterval(() => {
-          setLockTimeLeft(t => {
-            if (t <= 1) {
-              setContinueLocked(false);
-              return 0;
+    const interval = setInterval(() => {
+      setLockTimeLeft((t) => {
+        if (t <= 1) {
+          // Step finished
+          if (currentStep >= steps.length - 1) {
+            setCompleted(true);
+            setIsRunning(false);
+            try { stop(); } catch {}
+            if (voiceEnabled) {
+              try { speak('Notice the stability and support beneath you.'); } catch {}
             }
-            return t - 1;
-          });
-        }, 1000);
-      }
-    }
+            return 0;
+          }
 
-    return () => {
-      if (interval) clearInterval(interval);
-      if (animRef.current) {
-        cancelAnimationFrame(animRef.current);
-        animRef.current = null;
-      }
-      lockStartRef.current = null;
-    };
-  }, [isRunning, lockTimeLeft, completed, voiceEnabled, speak, continueLocked, currentStep]);
+          const nextStep = currentStep + 1;
+          setCurrentStep(nextStep);
+          try { stop(); } catch {}
+          if (voiceEnabled) {
+            try { speak(steps[nextStep].instruction); } catch {}
+          }
+          return STEP_SECONDS;
+        }
 
-  useEffect(() => {
-    // progress reflects the locked countdown (8s) while running
-    if (completed) {
-      setProgress(100);
-      setSmoothProgress(100);
-      return;
-    }
-    if (!isRunning) {
-      setProgress(0);
-      setSmoothProgress(0);
-    }
-  }, [isRunning, completed]);
+        return t - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isRunning, completed, lockTimeLeft, currentStep, voiceEnabled, speak, stop]);
 
   const handleReset = () => {
     setIsRunning(false);
-    setContinueLocked(false);
     setLockTimeLeft(0);
     setCompleted(false);
     setCurrentStep(0);
-    setProgress(0);
-    setSmoothProgress(0);
-    if (animRef.current) {
-      cancelAnimationFrame(animRef.current);
-      animRef.current = null;
-    }
-  };
-
-  const handleContinue = () => {
-    if (continueLocked || !isRunning) return;
-
-    // Advance through steps; lock applies to every step
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(prev => Math.min(prev + 1, steps.length - 1));
-    } else {
-      setCompleted(true);
-      setIsRunning(false);
-      setContinueLocked(false);
-      setLockTimeLeft(0);
-      setProgress(100);
-      setSmoothProgress(100);
-      if (voiceEnabled) {
-        speak('Notice the stability and support beneath you.');
-      }
-    }
+    try { stop(); } catch {}
   };
 
   return (
@@ -201,9 +126,11 @@ export default function PhysicalGroundingGame() {
             {/* Animation */}
             <div className="flex justify-center mb-12">
               <div className="w-64 h-16 sm:w-80 sm:h-20 md:w-96 md:h-24 bg-gradient-to-r from-teal-200 to-cyan-200 rounded-2xl flex items-center justify-center relative overflow-hidden">
-                <div className="absolute inset-0 opacity-30">
-                  <div className="absolute inset-4 border-2 border-teal-400 rounded-xl" />
-                  <div className="absolute inset-8 border-2 border-teal-400 rounded-lg" />
+                <div className="absolute inset-0 opacity-30 flex items-center justify-center pointer-events-none">
+                  <div className="relative">
+                    <div className="w-36 h-36 sm:w-44 md:w-52 border-2 border-teal-400" />
+                    <div className="absolute inset-3 border-2 border-teal-400" />
+                  </div>
                 </div>
                 <div className="text-center">
                   <div className="text-4xl font-bold text-teal-600">{isRunning && !completed ? lockTimeLeft : completed ? '✓' : ''}</div>
@@ -244,39 +171,48 @@ export default function PhysicalGroundingGame() {
               )}
             </div>
 
-            {/* Progress Bar */}
-            <div className="mb-6 sm:mb-8">
-              <div className="flex justify-between text-sm text-gray-600 mb-2">
-                <span>Progress</span>
-                <span>{Math.round(progress)}%</span>
-              </div>
-              <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-teal-400 to-cyan-500"
-                  style={{ width: `${completed ? 100 : smoothProgress}%`, transition: 'width 120ms linear' }}
-                />
-              </div>
-            </div>
-
             {/* Controls */}
             <div className="flex gap-2 sm:gap-4 justify-center items-center mb-6 sm:mb-8 flex-wrap">
               <Button
                 onClick={() => {
-                  if (!isRunning) {
-                    // Start or resume the sequence
-                    setCompleted(false);
-                    if (completed) {
-                      // fresh run
-                      setCurrentStep(0);
-                      setLockTimeLeft(0);
-                      setContinueLocked(false);
-                      setSmoothProgress(0);
-                      setProgress(0);
-                    }
-                    setIsRunning(true);
-                  } else {
-                    // Pause the sequence
+                  if (isRunning) {
+                    // Pause
                     setIsRunning(false);
+                    try { stop(); } catch {}
+                    return;
+                  }
+
+                  // Start / Resume
+                  if (completed) {
+                    setCompleted(false);
+                    setCurrentStep(0);
+                    setLockTimeLeft(STEP_SECONDS);
+                    setIsRunning(true);
+                    try { stop(); } catch {}
+                    if (voiceEnabled) {
+                      try { speak(steps[0].instruction); } catch {}
+                    }
+                    return;
+                  }
+
+                  if (lockTimeLeft > 0) {
+                    // Resume from where it was paused
+                    setIsRunning(true);
+                    try { stop(); } catch {}
+                    if (voiceEnabled && steps[currentStep]) {
+                      try { speak(steps[currentStep].instruction); } catch {}
+                    }
+                    return;
+                  }
+
+                  // Fresh start
+                  setCompleted(false);
+                  setCurrentStep(0);
+                  setLockTimeLeft(STEP_SECONDS);
+                  setIsRunning(true);
+                  try { stop(); } catch {}
+                  if (voiceEnabled) {
+                    try { speak(steps[0].instruction); } catch {}
                   }
                 }}
                 size="lg"
@@ -290,7 +226,7 @@ export default function PhysicalGroundingGame() {
                 ) : (
                   <>
                     <Play className="w-4 h-4 mr-2" />
-                    Start
+                    {lockTimeLeft > 0 && !completed ? 'Resume' : 'Start'}
                   </>
                 )}
               </Button>
@@ -304,15 +240,12 @@ export default function PhysicalGroundingGame() {
                 Reset
               </Button>
               <Button
-                onClick={handleContinue}
-                disabled={continueLocked || !isRunning || completed}
-                size="lg"
-                className="sm:flex-none"
-              >
-                {continueLocked ? `Hold (${lockTimeLeft}s)` : 'Continue'}
-              </Button>
-              <Button
-                onClick={() => setVoiceEnabled(!voiceEnabled)}
+                onClick={() => {
+                  if (voiceEnabled) {
+                    try { stop(); } catch {}
+                  }
+                  setVoiceEnabled(!voiceEnabled);
+                }}
                 variant={voiceEnabled ? 'default' : 'outline'}
                 size="lg"
                 className="sm:flex-none"
