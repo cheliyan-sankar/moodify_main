@@ -93,10 +93,15 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
 
   const handleGoogleSignIn = async () => {
     try {
+      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '');
+      const redirectTo = siteUrl
+        ? `${siteUrl}/auth/callback`
+        : `${window.location.origin}/auth/callback`;
+
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo,
         },
       });
 

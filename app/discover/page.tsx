@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Gamepad2, BookOpen, Heart, ClipboardList } from 'lucide-react';
+import { ArrowLeft, Gamepad2, BookOpen, Heart } from 'lucide-react';
 import Link from 'next/link';
 import { ProtectedRoute } from '@/components/protected-route';
 import { BooksSection } from '@/components/books-section';
@@ -33,13 +33,9 @@ function DiscoverContent() {
       </nav>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12">
-        <Card className="mb-12 border-2 border-accent/30 bg-gradient-to-br from-accent/5 to-primary/5 overflow-hidden">
-          <div className="h-1 bg-gradient-to-r from-accent to-primary" />
+        <Card className="mb-12 overflow-hidden border-0 bg-accent/20">
           <CardContent className="p-4 sm:p-6 md:p-8">
             <div className="flex flex-col md:flex-row items-center gap-6">
-              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-accent to-primary flex items-center justify-center flex-shrink-0">
-                <ClipboardList className="w-10 h-10 text-white" />
-              </div>
               <div className="flex-1 text-center md:text-left">
                 <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-primary mb-2">
                   Take Our AI Mood Assessment
@@ -47,15 +43,26 @@ function DiscoverContent() {
                 <p className="text-muted-foreground mb-4">
                   Get personalized insights about your emotional well-being with our psychometric assessment. Takes just 2-3 minutes.
                 </p>
+
+                <div className="w-full md:w-auto">
+                  <Link href="/assessment">
+                    <Button className="w-full md:w-auto h-11 rounded-md px-8 bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity text-xs sm:text-sm md:text-base">
+                      Start Assessment
+                    </Button>
+                  </Link>
+                </div>
               </div>
-              <Link href="/assessment" className="w-full md:w-auto">
-                <Button
-                  size="lg"
-                  className="bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity text-xs sm:text-sm md:text-base w-full md:w-auto"
-                >
-                  Start Assessment
-                </Button>
-              </Link>
+
+              <div className="w-full md:w-auto flex justify-center md:justify-end">
+                <div className="w-[160px] sm:w-[200px] md:w-[220px] aspect-square rounded-3xl bg-muted flex items-center justify-center overflow-hidden">
+                  <img
+                    src="/assessment-boy.png"
+                    alt="Assessment illustration"
+                    className="h-full w-full object-contain"
+                    draggable={false}
+                  />
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>

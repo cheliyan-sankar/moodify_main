@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { supabase } from '@/lib/supabase';
+import { Heart } from 'lucide-react';
 
 type Consultant = {
   id: string;
@@ -18,19 +18,68 @@ export default function ConsultantCarousel() {
   const [consultants, setConsultants] = useState<Consultant[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const ConsultantCard = ({ consultant }: { consultant: Consultant }) => {
+    const name = consultant.full_name?.trim() || 'Consultant Name';
+    const title = consultant.title?.trim() || 'Title';
+
+    const Action = ({ children }: { children: React.ReactNode }) =>
+      consultant.booking_url ? (
+        <a href={consultant.booking_url} target="_blank" rel="noopener noreferrer">
+          {children}
+        </a>
+      ) : (
+        <Link href={`/consultants/${consultant.id}`}>{children}</Link>
+      );
+
+    return (
+      <div className="rounded-3xl bg-card text-card-foreground shadow-sm border-2 p-4">
+        <div className="aspect-square w-full rounded-3xl bg-muted overflow-hidden">
+          {consultant.picture_url ? (
+            <img
+              src={consultant.picture_url}
+              alt={name}
+              className="h-full w-full object-cover"
+              draggable={false}
+            />
+          ) : null}
+        </div>
+
+        <div className="mt-3">
+          <div className="inline-flex max-w-full rounded-full bg-primary/10 px-4 py-1">
+            <span className="truncate text-sm font-semibold uppercase tracking-widest text-primary">
+              {name}
+            </span>
+          </div>
+        </div>
+
+        <div className="mt-3 flex items-center justify-between gap-3">
+          <div className="flex min-w-0 items-center gap-2">
+            <Heart className="h-5 w-5 text-destructive" fill="currentColor" />
+            <span className="truncate text-sm font-semibold uppercase tracking-widest text-primary">
+              {title}
+            </span>
+          </div>
+
+          <Action>
+            <Button className="rounded-full px-4 py-2 text-sm font-semibold uppercase tracking-widest">
+              Consult Now
+            </Button>
+          </Action>
+        </div>
+      </div>
+    );
+  };
+
 
   useEffect(() => {
     let isMounted = true;
+
     const fetchConsultants = async () => {
       try {
-        const { data } = await supabase
-          .from('consultants')
-          .select('*')
-          .order('created_at', { ascending: false })
-          .limit(12);
-
+        const res = await fetch('/api/consultants', { cache: 'no-store' });
+        const json = (await res.json().catch(() => ({}))) as any;
         if (!isMounted) return;
-        setConsultants(data || []);
+        setConsultants((json?.consultants as Consultant[]) || []);
       } catch (err) {
         console.error('Error loading consultants:', err);
       } finally {
@@ -39,8 +88,23 @@ export default function ConsultantCarousel() {
     };
 
     fetchConsultants();
+
+    const onFocus = () => {
+      // When the user comes back from the admin tab, refresh.
+      fetchConsultants();
+    };
+
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') fetchConsultants();
+    };
+
+    window.addEventListener('focus', onFocus);
+    document.addEventListener('visibilitychange', onVisibility);
+
     return () => {
       isMounted = false;
+      window.removeEventListener('focus', onFocus);
+      document.removeEventListener('visibilitychange', onVisibility);
     };
   }, []);
 
@@ -190,12 +254,14 @@ export default function ConsultantCarousel() {
 
   if (consultants.length === 0) {
     return (
-      <Card className="border-2">
-        <CardContent className="p-6 text-center">
-          <h3 className="text-lg font-semibold">Connect with Certified Therapists</h3>
-          <p className="text-sm text-muted-foreground">No consultants available right now. Add consultants via the admin panel.</p>
-        </CardContent>
-      </Card>
+      <div className="w-full flex justify-center">
+        <img
+          src="/consultant-empty-state.svg"
+          alt="Consultant card placeholder"
+          className="w-full max-w-[262px] h-auto"
+          draggable={false}
+        />
+      </div>
     );
   }
 
@@ -205,37 +271,7 @@ export default function ConsultantCarousel() {
       <div className="flex gap-4 overflow-x-hidden">
         {consultants.map((c) => (
           <div key={c.id} className="consultant-card-wrapper">
-            <Card className="relative border-2 overflow-hidden rounded-lg h-[220px]">
-              {c.picture_url ? (
-                <div className="relative h-full w-full">
-                  <img src={c.picture_url} alt={c.full_name} className="absolute inset-0 w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-
-                  <div className="absolute left-4 right-4 bottom-4 flex items-center justify-between">
-                    <div className="text-white">
-                      <h4 className="text-lg font-bold">{c.full_name || 'Consultant'}</h4>
-                      <p className="text-sm opacity-90">{c.title || 'Therapist'}</p>
-                    </div>
-
-                    <div>
-                      {c.booking_url ? (
-                        <a href={c.booking_url} target="_blank" rel="noopener noreferrer">
-                          <Button className="rounded-full px-4 py-2 bg-gradient-to-r from-primary to-accent text-white text-sm">Book Now</Button>
-                        </a>
-                      ) : (
-                        <Link href={`/consultants/${c.id}`}>
-                          <Button className="rounded-full px-4 py-2 bg-gradient-to-r from-primary to-accent text-white text-sm">Details</Button>
-                        </Link>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="relative h-full flex items-center justify-center bg-gray-100">
-                  <span className="text-5xl">👩‍⚕️</span>
-                </div>
-              )}
-            </Card>
+            <ConsultantCard consultant={c} />
           </div>
         ))}
       </div>
@@ -331,72 +367,14 @@ export default function ConsultantCarousel() {
       <div ref={trackRef} className="flex gap-4 will-change-transform">
         {consultants.map((c) => (
           <div key={c.id} className="consultant-card-wrapper">
-            <Card className="relative border-2 overflow-hidden rounded-lg h-[220px]">
-              {c.picture_url ? (
-                <div className="relative h-full w-full">
-                  <img src={c.picture_url} alt={c.full_name} className="absolute inset-0 w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-
-                  <div className="absolute left-4 right-4 bottom-4 flex items-center justify-between">
-                    <div className="text-white">
-                      <h4 className="text-lg font-bold">{c.full_name || 'Consultant'}</h4>
-                      <p className="text-sm opacity-90">{c.title || 'Therapist'}</p>
-                    </div>
-
-                    <div>
-                      {c.booking_url ? (
-                        <a href={c.booking_url} target="_blank" rel="noopener noreferrer">
-                          <Button className="rounded-full px-4 py-2 bg-gradient-to-r from-primary to-accent text-white text-sm">Book Now</Button>
-                        </a>
-                      ) : (
-                        <Link href={`/consultants/${c.id}`}>
-                          <Button className="rounded-full px-4 py-2 bg-gradient-to-r from-primary to-accent text-white text-sm">Details</Button>
-                        </Link>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="relative h-full flex items-center justify-center bg-gray-100">
-                  <span className="text-5xl">👩‍⚕️</span>
-                </div>
-              )}
-            </Card>
+            <ConsultantCard consultant={c} />
           </div>
         ))}
 
         {/** duplicated for seamless looping */}
         {consultants.map((c) => (
           <div key={`dup-${c.id}`} className="consultant-card-wrapper">
-            <Card className="relative border-2 overflow-hidden rounded-lg h-[220px]">
-              {c.picture_url ? (
-                <div className="relative h-full w-full">
-                  <img src={c.picture_url} alt={c.full_name} className="absolute inset-0 w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  <div className="absolute left-4 right-4 bottom-4 flex items-center justify-between">
-                    <div className="text-white">
-                      <h4 className="text-lg font-bold">{c.full_name || 'Consultant'}</h4>
-                      <p className="text-sm opacity-90">{c.title || 'Therapist'}</p>
-                    </div>
-                    <div>
-                      {c.booking_url ? (
-                        <a href={c.booking_url} target="_blank" rel="noopener noreferrer">
-                          <Button className="rounded-full px-4 py-2 bg-gradient-to-r from-primary to-accent text-white text-sm">Book Now</Button>
-                        </a>
-                      ) : (
-                        <Link href={`/consultants/${c.id}`}>
-                          <Button className="rounded-full px-4 py-2 bg-gradient-to-r from-primary to-accent text-white text-sm">Details</Button>
-                        </Link>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="relative h-full flex items-center justify-center bg-gray-100">
-                  <span className="text-5xl">👩‍⚕️</span>
-                </div>
-              )}
-            </Card>
+            <ConsultantCard consultant={c} />
           </div>
         ))}
       </div>
