@@ -1,9 +1,9 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+const supabase = supabaseUrl && supabaseAnonKey ? createClient(supabaseUrl, supabaseAnonKey) : null;
 
 export interface SeoMetadata {
   id: string;
@@ -17,6 +17,13 @@ export interface SeoMetadata {
 
 export async function getSeoMetadata(pageUrl: string): Promise<SeoMetadata | null> {
   try {
+    if (!supabase) {
+      console.error(
+        'Supabase is not configured for SEO metadata. Set SUPABASE_URL + SUPABASE_ANON_KEY (or NEXT_PUBLIC_* equivalents) in your deployment environment.'
+      );
+      return null;
+    }
+
     const { data, error } = await supabase
       .from('seo_metadata')
       .select('*')
@@ -37,6 +44,13 @@ export async function getSeoMetadata(pageUrl: string): Promise<SeoMetadata | nul
 
 export async function getAllSeoMetadata(): Promise<SeoMetadata[]> {
   try {
+    if (!supabase) {
+      console.error(
+        'Supabase is not configured for SEO metadata. Set SUPABASE_URL + SUPABASE_ANON_KEY (or NEXT_PUBLIC_* equivalents) in your deployment environment.'
+      );
+      return [];
+    }
+
     const { data, error } = await supabase
       .from('seo_metadata')
       .select('*')

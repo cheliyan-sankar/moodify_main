@@ -518,10 +518,7 @@ export default function Home() {
           </CardContent>
         </Card>
 
-        <div className="mb-6">
-          <h2 className="text-xl sm:text-2xl font-semibold text-primary mb-4 text-center">Connect with Certified Therapists</h2>
-          <ConsultantCarousel />
-        </div>
+        <ConsultantCarousel />
 
         <div className="mt-12 sm:mt-16 md:mt-24">
           <div className="text-center mb-12">

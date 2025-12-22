@@ -1,7 +1,6 @@
- 'use client';
+'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Heart } from 'lucide-react';
@@ -17,6 +16,14 @@ type Consultant = {
 export default function ConsultantCarousel() {
   const [consultants, setConsultants] = useState<Consultant[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const visibleConsultants = useMemo(
+    () =>
+      consultants.filter(
+        (c) => !!c?.id && !!c.full_name?.trim()
+      ),
+    [consultants]
+  );
 
   const ConsultantCard = ({ consultant }: { consultant: Consultant }) => {
     const name = consultant.full_name?.trim() || 'Consultant Name';
@@ -234,175 +241,163 @@ export default function ConsultantCarousel() {
       container.removeEventListener('mouseleave', onLeave);
       if (ro) ro.disconnect();
     };
-  }, [consultants]);
+  }, [visibleConsultants]);
 
-  if (loading) {
-    return (
-      <div className="flex gap-4">
-        {Array.from({ length: 3 }).map((_, i) => (
-          <Card key={i} className="border-2 animate-pulse w-full">
-            <div className="h-40 bg-gray-200 rounded-t-lg" />
-            <CardContent className="p-4">
-              <div className="h-4 bg-gray-200 rounded mb-2" />
-              <div className="h-3 bg-gray-200 rounded w-3/4" />
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    );
-  }
+  // Before the admin adds any consultants (or if rows are incomplete), render nothing.
+  // This prevents an “empty card” from showing on the homepage.
+  if (loading || visibleConsultants.length === 0) return null;
 
-  if (consultants.length === 0) {
-    return (
-      <div className="w-full flex justify-center">
-        <img
-          src="/consultant-empty-state.svg"
-          alt="Consultant card placeholder"
-          className="w-full max-w-[262px] h-auto"
-          draggable={false}
-        />
-      </div>
-    );
-  }
+  const Section = ({ children }: { children: React.ReactNode }) => (
+    <div className="mb-6">
+      <h2 className="text-xl sm:text-2xl font-semibold text-primary mb-4 text-center">
+        Connect with Certified Therapists
+      </h2>
+      {children}
+    </div>
+  );
 
   // If 3 or fewer consultants just show them inline
-  if (consultants.length <= 3) {
+  if (visibleConsultants.length <= 3) {
     return (
-      <div className="flex gap-4 overflow-x-hidden">
-        {consultants.map((c) => (
-          <div key={c.id} className="consultant-card-wrapper">
-            <ConsultantCard consultant={c} />
-          </div>
-        ))}
-      </div>
+      <Section>
+        <div className="flex gap-4 overflow-x-hidden">
+          {visibleConsultants.map((c) => (
+            <div key={c.id} className="consultant-card-wrapper">
+              <ConsultantCard consultant={c} />
+            </div>
+          ))}
+        </div>
+      </Section>
     );
   }
 
   return (
-    <div
-      ref={containerRef}
-      className="relative w-full overflow-hidden select-none cursor-grab active:cursor-grabbing"
-      style={{ msOverflowStyle: 'none', scrollbarWidth: 'none', touchAction: 'pan-y' }}
-      onPointerDown={(e) => {
-        // Left button / touch only
-        if (e.pointerType === 'mouse' && e.button !== 0) return;
-        if (resumeTimeoutRef.current) window.clearTimeout(resumeTimeoutRef.current);
+    <Section>
+      <div
+        ref={containerRef}
+        className="relative w-full overflow-hidden select-none cursor-grab active:cursor-grabbing"
+        style={{ msOverflowStyle: 'none', scrollbarWidth: 'none', touchAction: 'pan-y' }}
+        onPointerDown={(e) => {
+          // Left button / touch only
+          if (e.pointerType === 'mouse' && e.button !== 0) return;
+          if (resumeTimeoutRef.current) window.clearTimeout(resumeTimeoutRef.current);
 
-        stopMomentum();
+          stopMomentum();
 
-        pausedRef.current = true;
-        isDraggingRef.current = true;
-        didDragRef.current = false;
-        dragStartXRef.current = e.clientX;
-        dragStartOffsetRef.current = offsetRef.current;
+          pausedRef.current = true;
+          isDraggingRef.current = true;
+          didDragRef.current = false;
+          dragStartXRef.current = e.clientX;
+          dragStartOffsetRef.current = offsetRef.current;
 
-        lastMoveTimeRef.current = performance.now();
-        lastMoveXRef.current = e.clientX;
-        velocityRef.current = 0;
-
-        try {
-          (e.currentTarget as HTMLDivElement).setPointerCapture(e.pointerId);
-        } catch {
-          // no-op
-        }
-      }}
-      onPointerMove={(e) => {
-        if (!isDraggingRef.current) return;
-        const delta = dragStartXRef.current - e.clientX;
-        if (Math.abs(delta) > 4) didDragRef.current = true;
-
-        offsetRef.current = wrapOffset(dragStartOffsetRef.current + delta);
-        applyTransform();
-
-        const now = performance.now();
-        const dt = (now - lastMoveTimeRef.current) / 1000;
-        if (dt > 0) {
-          const dx = lastMoveXRef.current - e.clientX;
-          // velocity is in the same direction as offset (drag left increases offset)
-          velocityRef.current = dx / dt;
-          lastMoveTimeRef.current = now;
+          lastMoveTimeRef.current = performance.now();
           lastMoveXRef.current = e.clientX;
-        }
-      }}
-      onPointerUp={(e) => {
-        if (!isDraggingRef.current) return;
-        isDraggingRef.current = false;
+          velocityRef.current = 0;
 
-        try {
-          (e.currentTarget as HTMLDivElement).releasePointerCapture(e.pointerId);
-        } catch {
-          // no-op
-        }
+          try {
+            (e.currentTarget as HTMLDivElement).setPointerCapture(e.pointerId);
+          } catch {
+            // no-op
+          }
+        }}
+        onPointerMove={(e) => {
+          if (!isDraggingRef.current) return;
+          const delta = dragStartXRef.current - e.clientX;
+          if (Math.abs(delta) > 4) didDragRef.current = true;
 
-        // Add a little inertia so sliding feels natural.
-        const v = velocityRef.current;
-        if (Math.abs(v) > 200) startMomentum(v);
-        else scheduleResume();
-      }}
-      onPointerCancel={() => {
-        if (!isDraggingRef.current) return;
-        isDraggingRef.current = false;
-        scheduleResume();
-      }}
-      onWheel={(e) => {
-        // Support trackpads / shift+wheel for horizontal scrolling.
-        const useDelta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : (e.shiftKey ? e.deltaY : 0);
-        if (!useDelta) return;
+          offsetRef.current = wrapOffset(dragStartOffsetRef.current + delta);
+          applyTransform();
 
-        e.preventDefault();
-        if (resumeTimeoutRef.current) window.clearTimeout(resumeTimeoutRef.current);
-        pausedRef.current = true;
-        offsetRef.current = wrapOffset(offsetRef.current + useDelta);
-        applyTransform();
-        scheduleResume();
-      }}
-      onClickCapture={(e) => {
-        // Prevent accidental clicks when the user was dragging.
-        if (!didDragRef.current) return;
-        e.preventDefault();
-        e.stopPropagation();
-        didDragRef.current = false;
-      }}
-    >
-      <div ref={trackRef} className="flex gap-4 will-change-transform">
-        {consultants.map((c) => (
-          <div key={c.id} className="consultant-card-wrapper">
-            <ConsultantCard consultant={c} />
-          </div>
-        ))}
+          const now = performance.now();
+          const dt = (now - lastMoveTimeRef.current) / 1000;
+          if (dt > 0) {
+            const dx = lastMoveXRef.current - e.clientX;
+            // velocity is in the same direction as offset (drag left increases offset)
+            velocityRef.current = dx / dt;
+            lastMoveTimeRef.current = now;
+            lastMoveXRef.current = e.clientX;
+          }
+        }}
+        onPointerUp={(e) => {
+          if (!isDraggingRef.current) return;
+          isDraggingRef.current = false;
 
-        {/** duplicated for seamless looping */}
-        {consultants.map((c) => (
-          <div key={`dup-${c.id}`} className="consultant-card-wrapper">
-            <ConsultantCard consultant={c} />
-          </div>
-        ))}
+          try {
+            (e.currentTarget as HTMLDivElement).releasePointerCapture(e.pointerId);
+          } catch {
+            // no-op
+          }
+
+          // Add a little inertia so sliding feels natural.
+          const v = velocityRef.current;
+          if (Math.abs(v) > 200) startMomentum(v);
+          else scheduleResume();
+        }}
+        onPointerCancel={() => {
+          if (!isDraggingRef.current) return;
+          isDraggingRef.current = false;
+          scheduleResume();
+        }}
+        onWheel={(e) => {
+          // Support trackpads / shift+wheel for horizontal scrolling.
+          const useDelta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : (e.shiftKey ? e.deltaY : 0);
+          if (!useDelta) return;
+
+          e.preventDefault();
+          if (resumeTimeoutRef.current) window.clearTimeout(resumeTimeoutRef.current);
+          pausedRef.current = true;
+          offsetRef.current = wrapOffset(offsetRef.current + useDelta);
+          applyTransform();
+          scheduleResume();
+        }}
+        onClickCapture={(e) => {
+          // Prevent accidental clicks when the user was dragging.
+          if (!didDragRef.current) return;
+          e.preventDefault();
+          e.stopPropagation();
+          didDragRef.current = false;
+        }}
+      >
+        <div ref={trackRef} className="flex gap-4 will-change-transform">
+          {visibleConsultants.map((c) => (
+            <div key={c.id} className="consultant-card-wrapper">
+              <ConsultantCard consultant={c} />
+            </div>
+          ))}
+
+          {/** duplicated for seamless looping */}
+          {visibleConsultants.map((c) => (
+            <div key={`dup-${c.id}`} className="consultant-card-wrapper">
+              <ConsultantCard consultant={c} />
+            </div>
+          ))}
+        </div>
+
+        <style jsx>{`
+          .hide-scrollbar::-webkit-scrollbar { display: none; }
+          .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+          /* One card per view on mobile; more on larger screens */
+          .consultant-card-wrapper {
+            flex: 0 0 100%;
+            max-width: 100%;
+          }
+
+          @media (min-width: 640px) {
+            .consultant-card-wrapper {
+              flex: 0 0 calc((100% - 16px) / 2);
+              max-width: calc((100% - 16px) / 2);
+            }
+          }
+
+          @media (min-width: 1024px) {
+            .consultant-card-wrapper {
+              flex: 0 0 calc((100% - 32px) / 3);
+              max-width: calc((100% - 32px) / 3);
+            }
+          }
+        `}</style>
       </div>
-
-      <style jsx>{`
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-        /* One card per view on mobile; more on larger screens */
-        .consultant-card-wrapper {
-          flex: 0 0 100%;
-          max-width: 100%;
-        }
-
-        @media (min-width: 640px) {
-          .consultant-card-wrapper {
-            flex: 0 0 calc((100% - 16px) / 2);
-            max-width: calc((100% - 16px) / 2);
-          }
-        }
-
-        @media (min-width: 1024px) {
-          .consultant-card-wrapper {
-            flex: 0 0 calc((100% - 32px) / 3);
-            max-width: calc((100% - 32px) / 3);
-          }
-        }
-      `}</style>
-    </div>
+    </Section>
   );
 }
