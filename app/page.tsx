@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Sparkles, Heart, Smile, Brain, Zap, Trophy, ClipboardList, LogOut, User as UserIcon, Menu, X, Laugh } from 'lucide-react';
+import { Sparkles, ClipboardList, LogOut, User as UserIcon, Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
 import { AuthModal } from '@/components/auth-modal';
@@ -45,6 +45,35 @@ export default function Home() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [recommendations, setRecommendations] = useState<any[]>([]);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const checkAdmin = async () => {
+      if (!user?.email) {
+        if (!cancelled) setIsAdmin(false);
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/admin/check-admin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: user.email }),
+        });
+        const json = await res.json().catch(() => ({} as any));
+        if (!cancelled) setIsAdmin(!!json?.isAdmin);
+      } catch {
+        if (!cancelled) setIsAdmin(false);
+      }
+    };
+
+    checkAdmin();
+    return () => {
+      cancelled = true;
+    };
+  }, [user?.email]);
 
   const handleAssessmentClick = () => {
     if (user) {
@@ -114,12 +143,12 @@ export default function Home() {
   const [popularGames, setPopularGames] = useState<Game[]>([]);
 
   const moods = [
-    { id: 'stressed', label: 'Stressed', icon: Brain, color: 'bg-orange-100 hover:bg-orange-200 border-orange-300' },
-    { id: 'sad', label: 'Sad', icon: Heart, color: 'bg-blue-100 hover:bg-blue-200 border-blue-300' },
-    { id: 'anxious', label: 'Anxious', icon: Zap, color: 'bg-yellow-100 hover:bg-yellow-200 border-yellow-300' },
-    { id: 'bored', label: 'Bored', icon: Smile, color: 'bg-green-100 hover:bg-green-200 border-green-300' },
-    { id: 'happy', label: 'Happy', icon: Laugh, color: 'bg-purple-200 hover:bg-purple-300 border-purple-400' },
-  ];
+    { id: 'stressed', label: 'Stressed', symbol: 'mood-stressed' },
+    { id: 'sad', label: 'Sad', symbol: 'mood-sad' },
+    { id: 'anxious', label: 'Anxious', symbol: 'mood-anxious' },
+    { id: 'bored', label: 'Bored', symbol: 'mood-bored' },
+    { id: 'happy', label: 'Happy', symbol: 'mood-happy' },
+  ] as const;
 
   const getIconComponent = (iconName: string) => {
     const icons: { [key: string]: string } = {
@@ -328,36 +357,32 @@ export default function Home() {
           <h2 className="text-xl sm:text-2xl font-semibold text-primary mb-6 text-center">
             {user ? (
               <>
-                How are you feeling today,{' '}
+                How are you feeling today?{' '}
                 <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                  {user.user_metadata?.full_name || user.email?.split('@')[0] || 'there'}
+                  {isAdmin ? 'admin' : (user.user_metadata?.full_name || user.email?.split('@')[0] || 'there')}
                 </span>
-                ?
               </>
             ) : (
               'How are you feeling today?'
             )}
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-4 max-w-3xl mx-auto">
-            {moods.map((mood) => {
-              const Icon = mood.icon;
-              return (
-                <button
-                  key={mood.id}
-                  onClick={() => handleMoodSelect(mood.id)}
-                  className={`${mood.color} border-2 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 ${
-                    selectedMood === mood.id ? 'ring-4 ring-accent scale-105' : ''
-                  }`}
-                >
-                  <Icon className="w-8 h-8 mx-auto mb-2" />
-                  <p className="font-medium">{mood.label}</p>
-                </button>
-              );
-            })}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 max-w-5xl mx-auto">
+            {moods.map((mood) => (
+              <button
+                key={mood.id}
+                onClick={() => handleMoodSelect(mood.id)}
+                className="bg-muted/70 hover:bg-muted border border-border rounded-3xl p-4 sm:p-5 transition-all duration-300 transform hover:scale-105"
+              >
+                <svg className="w-24 h-24 mx-auto" viewBox="0 0 53 53" aria-hidden="true">
+                  <use href={`/track-your-mood.svg#${mood.symbol}`} width="53" height="53" />
+                </svg>
+                <p className="mt-2 text-base sm:text-lg font-semibold text-muted-foreground">{mood.label}</p>
+              </button>
+            ))}
           </div>
           {selectedMood && (
             <p className="text-center mt-6 text-primary font-medium animate-in fade-in duration-500">
-              Great! Let's find the perfect game to help you feel better
+              Great! Let’s find the perfect game to help you feel better
             </p>
           )}
 
