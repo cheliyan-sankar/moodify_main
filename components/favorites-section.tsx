@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Pin, BookOpen, Heart } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-context';
+import { useFavorites } from '@/lib/favorites-context';
 
 type FavoriteItem = {
   id: string;
@@ -100,20 +101,13 @@ export function FavoritesSection() {
     }
   };
 
+  const { removeFavorite } = useFavorites();
+
   const removeFromFavorites = async (itemId: string, itemType: 'game' | 'book') => {
     if (!user) return;
-
     try {
-      const { error } = await supabase
-        .from('user_favorites')
-        .delete()
-        .eq('user_id', user.id)
-        .eq('item_type', itemType)
-        .eq('item_id', itemId);
-
-      if (error) throw error;
-
-      setFavorites(favorites.filter(f => f.id !== itemId));
+      await removeFavorite(itemId, itemType);
+      setFavorites(favorites.filter((f) => f.id !== itemId));
     } catch (error) {
       console.error('Error removing from favorites:', error);
     }
@@ -162,71 +156,89 @@ export function FavoritesSection() {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      {favorites.map((item, index) => (
-        <Card
-          key={item.id}
-          className="group relative border-2 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden animate-in fade-in-50 slide-in-from-bottom-4"
-          style={{ animationDelay: `${index * 50}ms` }}
-        >
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => removeFromFavorites(item.id, item.type)}
-            className="absolute top-2 right-2 z-10 text-white bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300"
-            aria-label="Remove from favorites"
-          >
-            <Pin className="w-4 h-4 fill-current rotate-45" />
-          </Button>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      {favorites.map((item, index) => {
+        const isGame = item.type === 'game';
 
-          {item.type === 'game' ? (
-            <div
-              className="h-20 flex items-center justify-center transition-transform duration-300 group-hover:scale-105"
-              style={{ backgroundColor: item.color }}
-            >
-              <div className="text-4xl transition-transform duration-300 group-hover:scale-110">
-                {getIconComponent(item.icon)}
+        function GameCover({ src, title, wrapperClass = '', imgClass = '' }: { src?: string; title?: string; wrapperClass?: string; imgClass?: string }) {
+          const [failed, setFailed] = useState(false);
+
+          if (src && !failed) {
+            return (
+              <div className={wrapperClass}>
+                <img src={src} alt={title} className={imgClass} onError={() => setFailed(true)} />
+              </div>
+            );
+          }
+
+          return (
+            <div className={`${wrapperClass} bg-gray-100 flex items-center justify-center`}>
+              <div className="text-2xl sm:text-3xl font-bold text-gray-600">{title ? title.charAt(0).toUpperCase() : 'G'}</div>
+            </div>
+          );
+        }
+
+        return (
+          <Card
+            key={item.id}
+            className="group relative w-full max-w-[420px] aspect-square rounded-[24px] bg-white border-0 shadow-[0_8px_16px_rgba(75,52,37,0.05)] overflow-hidden animate-in fade-in-50 slide-in-from-bottom-4 cursor-pointer"
+            style={{ animationDelay: `${index * 50}ms` }}
+          >
+            <div className="flex h-full flex-col p-4 sm:p-5">
+              <div className="relative h-[46%] w-full overflow-hidden rounded-[24px] bg-[#D9D9D9]">
+                <GameCover
+                  src={item.cover_image_url}
+                  title={item.title}
+                  wrapperClass="h-full w-full"
+                  imgClass="h-full w-full object-cover"
+                />
+
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={(e) => { e.stopPropagation(); removeFromFavorites(item.id, item.type); }}
+                  className="absolute right-3 top-3 z-20 h-6 w-6 rounded-full bg-transparent p-0 hover:bg-transparent focus-visible:ring-0"
+                  aria-label="Remove from favorites"
+                >
+                  <Heart className="h-4 w-4 text-red-500 fill-current" style={{ stroke: 'none' }} />
+                </Button>
+              </div>
+
+                <div className="mt-[10px]">
+                <h3 className="line-clamp-2 text-[16px] sm:text-[17px] md:text-[18px] font-semibold leading-[1.2] text-[#450BC8]">
+                  {item.title}
+                </h3>
+                <p className="mt-2 line-clamp-3 text-[12px] sm:text-[13px] leading-[1.35] text-[rgba(31,22,15,0.64)]">
+                  {item.description}
+                </p>
+              </div>
+
+              <div className="mt-auto flex items-end justify-between pt-3">
+                <span className="text-[12px] sm:text-[13px] font-semibold text-[#450BC8]">
+                  {item.category || item.genre}
+                </span>
+                {isGame ? (
+                  <Button
+                    size="sm"
+                    className="h-7 sm:h-8 w-[100px] sm:w-[120px] rounded-[14px] bg-[#450BC8] px-0 text-[10px] sm:text-[11px] font-semibold text-white hover:bg-[#450BC8]/90"
+                    onClick={(e) => { e.stopPropagation(); /* could navigate to game */ }}
+                  >
+                    PLAY NOW
+                  </Button>
+                ) : (
+                  <Button
+                    size="sm"
+                    className="h-7 sm:h-8 w-[100px] sm:w-[120px] rounded-[14px] bg-[#450BC8] px-0 text-[10px] sm:text-[11px] font-semibold text-white hover:bg-[#450BC8]/90"
+                    onClick={(e) => { e.stopPropagation(); /* could open book */ }}
+                  >
+                    READ
+                  </Button>
+                )}
               </div>
             </div>
-          ) : item.cover_image_url ? (
-            <div className="relative h-20 overflow-hidden transition-transform duration-300 group-hover:scale-105">
-              <img
-                src={item.cover_image_url}
-                alt={item.title}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          ) : (
-            <div
-              className="h-20 flex items-center justify-center transition-transform duration-300 group-hover:scale-105"
-              style={{ backgroundColor: item.color }}
-            >
-              <BookOpen className="w-8 h-8 text-white transition-transform duration-300 group-hover:scale-110" />
-            </div>
-          )}
-
-          <CardContent className="p-4">
-            <h4 className="font-bold text-sm mb-1 line-clamp-1 group-hover:text-primary transition-colors">
-              {item.title}
-            </h4>
-            {item.author && (
-              <p className="text-xs text-gray-600 mb-1">by {item.author}</p>
-            )}
-            <p className="text-xs text-gray-500 line-clamp-2 mb-2">
-              {item.description}
-            </p>
-            <span
-              className="inline-block text-xs font-semibold px-2 py-1 rounded-full"
-              style={{
-                backgroundColor: `${item.color}20`,
-                color: item.color,
-              }}
-            >
-              {item.category || item.genre}
-            </span>
-          </CardContent>
-        </Card>
-      ))}
+          </Card>
+        );
+      })}
     </div>
   );
 }

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Heart, Play } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-context';
+import { useFavorites } from '@/lib/favorites-context';
 import {
   Dialog,
   DialogContent,
@@ -108,45 +109,47 @@ const gameDetailsMap: Readonly<{ [key: string]: GameDetails }> = {
   }
 };
 
-function GameCover({ src, title, wrapperClass = '', imgClass = '' }: { src?: string; title?: string; wrapperClass?: string; imgClass?: string }) {
+function GameCover({ src, title, wrapperClass = '', imgClass = '', action }: { src?: string; title?: string; wrapperClass?: string; imgClass?: string; action?: React.ReactNode }) {
   const [failed, setFailed] = useState(false);
+
+  // Make the wrapper relative so `action` can be absolutely positioned inside it
+  const baseWrapper = `${wrapperClass} relative`;
 
   if (src && !failed) {
     return (
-      <div className={wrapperClass}>
+      <div className={baseWrapper}>
         <img
           src={src}
           alt={title}
           className={imgClass}
           onError={() => setFailed(true)}
         />
+        {action}
       </div>
     );
   }
 
   return (
-    <div className={`${wrapperClass} bg-gray-100 flex items-center justify-center`}>
+    <div className={`${baseWrapper} bg-gray-100 flex items-center justify-center`}>
       <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-600">
         {title ? title.charAt(0).toUpperCase() : 'G'}
       </div>
+      {action}
     </div>
   );
 }
 
 export function GamesSection() {
   const { user } = useAuth();
+  const { favoritesSet, toggleFavorite } = useFavorites();
   const [games, setGames] = useState<Game[]>([]);
   const [filterCategory, setFilterCategory] = useState<string | null>(null);
-  const [pinnedGames, setPinnedGames] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [selectedGame, setSelectedGame] = useState<Game | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
     fetchGames();
-    if (user) {
-      fetchPinnedGames();
-    }
   }, [user]);
 
   const fetchGames = async () => {
@@ -165,61 +168,7 @@ export function GamesSection() {
     }
   };
 
-  const fetchPinnedGames = async () => {
-    if (!user) return;
-
-    try {
-      const { data, error } = await supabase
-        .from('user_favorites')
-        .select('item_id')
-        .eq('user_id', user.id)
-        .eq('item_type', 'game');
-
-      if (error) throw error;
-      setPinnedGames(new Set(data?.map((f: any) => f.item_id) || []));
-    } catch (error) {
-      console.error('Error fetching pinned games:', error);
-    }
-  };
-
-  const togglePin = useCallback(async (gameId: string) => {
-    if (!user) return;
-
-    try {
-      const isPinned = pinnedGames.has(gameId);
-
-      if (isPinned) {
-        const { error } = await supabase
-          .from('user_favorites')
-          .delete()
-          .eq('user_id', user.id)
-          .eq('item_type', 'game')
-          .eq('item_id', gameId);
-
-        if (error) throw error;
-
-        const newPinned = new Set(pinnedGames);
-        newPinned.delete(gameId);
-        setPinnedGames(newPinned);
-      } else {
-        const { error } = await supabase
-          .from('user_favorites')
-          .insert({
-            user_id: user.id,
-            item_type: 'game',
-            item_id: gameId,
-          });
-
-        if (error) throw error;
-
-        const newPinned = new Set(pinnedGames);
-        newPinned.add(gameId);
-        setPinnedGames(newPinned);
-      }
-    } catch (error) {
-      console.error('Error toggling pin:', error);
-    }
-  }, [user, pinnedGames]);
+  // Favorites are managed via `useFavorites()` context (favoritesSet, toggleFavorite)
 
   const getIconComponent = (iconName: string) => {
     const icons: { [key: string]: string } = {
@@ -311,7 +260,7 @@ export function GamesSection() {
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {(filterCategory ? games.filter(g => g.category === filterCategory) : games).map((game, index) => {
-          const isPinned = pinnedGames.has(game.id);
+          const isPinned = favoritesSet.has(game.id);
           const colorFrom = game.color_from || (game as any).colors?.split('-')[0] || '#9b87f5';
           const colorTo = game.color_to || (game as any).colors?.split('-')[1] || '#7c3aed';
           const parsedFrom = parseColorFromString(colorFrom);
@@ -331,29 +280,30 @@ export function GamesSection() {
                     title={game.title}
                     wrapperClass="h-full w-full"
                     imgClass="h-full w-full object-cover"
+                    action={(
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        disabled={!user}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (!user) return;
+                          toggleFavorite(game.id, 'game');
+                        }}
+                        className="absolute right-3 top-3 z-20 h-9 w-9 rounded-full bg-transparent p-0 hover:bg-transparent focus-visible:ring-0"
+                        aria-label={isPinned ? 'Unpin game' : 'Pin game'}
+                      >
+                        <Heart
+                          className={`h-7 w-7 sm:h-8 sm:w-8 ${isPinned ? 'text-red-500' : 'text-[#D9D9D9]'}`}
+                          style={{
+                            fill: 'currentColor',
+                            stroke: 'none',
+                            opacity: user ? 1 : 0.6,
+                          }}
+                        />
+                      </Button>
+                    )}
                   />
-
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    disabled={!user}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (!user) return;
-                      togglePin(game.id);
-                    }}
-                    className="absolute right-3 top-3 h-9 w-9 rounded-full bg-transparent p-0 hover:bg-transparent focus-visible:ring-0"
-                    aria-label={isPinned ? 'Unpin game' : 'Pin game'}
-                  >
-                    <Heart
-                      className={`h-7 w-7 sm:h-8 sm:w-8 ${isPinned ? 'text-red-500' : 'text-[#D9D9D9]'}`}
-                      style={{
-                        fill: 'currentColor',
-                        stroke: 'none',
-                        opacity: user ? 1 : 0.6,
-                      }}
-                    />
-                  </Button>
                 </div>
 
                 <div className="mt-[11px]">

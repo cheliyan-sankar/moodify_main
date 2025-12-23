@@ -2,6 +2,7 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { AuthProvider } from '@/lib/auth-context';
+import { FavoritesProvider } from '@/lib/favorites-context';
 import StructuredData from '@/components/structured-data';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
@@ -20,6 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} font-sans`}>
         <AuthProvider>
+          <FavoritesProvider>
           {/* Base WebSite schema for all pages */}
           <StructuredData
             script={{
@@ -35,6 +37,7 @@ export default function RootLayout({
             }}
           />
           {children}
+          </FavoritesProvider>
         </AuthProvider>
       </body>
     </html>

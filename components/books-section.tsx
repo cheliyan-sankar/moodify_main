@@ -3,10 +3,11 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Pin, BookOpen } from 'lucide-react';
+import { Pin, BookOpen, Heart } from 'lucide-react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-context';
+import { useFavorites } from '@/lib/favorites-context';
 
 type Book = {
   id: string;
@@ -20,15 +21,12 @@ type Book = {
 
 export function BooksSection() {
   const { user } = useAuth();
+  const { favoritesSet, toggleFavorite } = useFavorites();
   const [books, setBooks] = useState<Book[]>([]);
-  const [pinnedBooks, setPinnedBooks] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchBooks();
-    if (user) {
-      fetchPinnedBooks();
-    }
   }, [user]);
 
   const fetchBooks = async () => {
@@ -47,61 +45,7 @@ export function BooksSection() {
     }
   };
 
-  const fetchPinnedBooks = async () => {
-    if (!user) return;
-
-    try {
-      const { data, error } = await supabase
-        .from('user_favorites')
-        .select('item_id')
-        .eq('user_id', user.id)
-        .eq('item_type', 'book');
-
-      if (error) throw error;
-      setPinnedBooks(new Set(data?.map((f: any) => f.item_id) || []));
-    } catch (error) {
-      console.error('Error fetching pinned books:', error);
-    }
-  };
-
-  const togglePin = async (bookId: string) => {
-    if (!user) return;
-
-    try {
-      const isPinned = pinnedBooks.has(bookId);
-
-      if (isPinned) {
-        const { error } = await supabase
-          .from('user_favorites')
-          .delete()
-          .eq('user_id', user.id)
-          .eq('item_type', 'book')
-          .eq('item_id', bookId);
-
-        if (error) throw error;
-
-        const newPinned = new Set(pinnedBooks);
-        newPinned.delete(bookId);
-        setPinnedBooks(newPinned);
-      } else {
-        const { error } = await supabase
-          .from('user_favorites')
-          .insert({
-            user_id: user.id,
-            item_type: 'book',
-            item_id: bookId,
-          });
-
-        if (error) throw error;
-
-        const newPinned = new Set(pinnedBooks);
-        newPinned.add(bookId);
-        setPinnedBooks(newPinned);
-      }
-    } catch (error) {
-      console.error('Error toggling pin:', error);
-    }
-  };
+  // Favorites state handled by `useFavorites()`
 
   if (loading) {
     return (
@@ -122,77 +66,105 @@ export function BooksSection() {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
       {books.map((book, index) => {
-        const isPinned = pinnedBooks.has(book.id);
+        const isPinned = favoritesSet.has(book.id);
+
+        function GameCover({ src, title, wrapperClass = '', imgClass = '', action }: { src?: string; title?: string; wrapperClass?: string; imgClass?: string; action?: React.ReactNode }) {
+          const [failed, setFailed] = useState(false);
+
+          const baseWrapper = `${wrapperClass} relative`;
+
+          if (src && !failed) {
+            return (
+              <div className={baseWrapper}>
+                <img src={src} alt={title} className={imgClass} onError={() => setFailed(true)} />
+                {action}
+              </div>
+            );
+          }
+
+          return (
+            <div className={`${baseWrapper} bg-gray-100 flex items-center justify-center`}>
+              <div className="text-3xl font-bold text-gray-600">{title ? title.charAt(0).toUpperCase() : 'B'}</div>
+              {action}
+            </div>
+          );
+        }
+
         return (
           <Link key={book.id} href={`/books/${book.id}`}>
             <Card
-              className="group relative border-2 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 overflow-hidden animate-in fade-in-50 slide-in-from-bottom-4 cursor-pointer h-full"
+              className="group relative w-full max-w-[420px] aspect-square rounded-[24px] bg-white border-0 shadow-[0_8px_16px_rgba(75,52,37,0.05)] overflow-hidden animate-in fade-in-50 slide-in-from-bottom-4 cursor-pointer h-full"
               style={{ animationDelay: `${index * 100}ms` }}
             >
-            {user && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => togglePin(book.id)}
-                className={`absolute top-4 right-4 z-10 transition-all duration-300 ${
-                  isPinned
-                    ? 'text-white bg-white/20 backdrop-blur-sm hover:bg-white/30'
-                    : 'text-gray-400 hover:text-gray-600 hover:bg-white/50 backdrop-blur-sm'
-                }`}
-                aria-label={isPinned ? 'Unpin book' : 'Pin book'}
-              >
-                <Pin
-                  className={`w-5 h-5 transition-transform duration-300 ${
-                    isPinned ? 'fill-current rotate-45' : ''
-                  }`}
-                />
-              </Button>
-            )}
+              {/* Heart button moved inside the cover via GameCover.action prop */}
 
-            {book.cover_image_url ? (
-              <div className="relative h-48 overflow-hidden transition-transform duration-300 group-hover:scale-105">
-                <img
-                  src={book.cover_image_url}
-                  alt={book.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            ) : (
-              <div
-                className="relative h-48 flex items-center justify-center p-6 transition-transform duration-300 group-hover:scale-105"
-                style={{ backgroundColor: book.cover_color }}
-              >
-                <div className="absolute inset-0 opacity-10">
-                  <div className="absolute inset-4 border-2 border-white rounded-lg" />
+              <div className="flex h-full flex-col p-4 sm:p-5">
+                <div className="relative h-[46%] w-full overflow-hidden rounded-[24px] bg-[#D9D9D9]">
+                  {book.cover_image_url ? (
+                    <GameCover
+                      src={book.cover_image_url}
+                      title={book.title}
+                      wrapperClass="h-full w-full"
+                      imgClass="h-full w-full object-cover"
+                      action={(
+                        user ? (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={(e) => { e.stopPropagation(); toggleFavorite(book.id, 'book'); }}
+                            className={`absolute right-3 top-3 z-20 h-9 w-9 rounded-full bg-transparent p-0 hover:bg-transparent focus-visible:ring-0 transition-all duration-300 ${isPinned ? 'text-red-500' : 'text-[#D9D9D9]'}`}
+                            aria-label={isPinned ? 'Unfavorite book' : 'Favorite book'}
+                          >
+                            <Heart className={`h-6 w-6 ${isPinned ? 'fill-current' : ''}`} />
+                          </Button>
+                        ) : null
+                      )}
+                    />
+                  ) : (
+                    <GameCover
+                      src={undefined}
+                      title={book.title}
+                      wrapperClass="h-full w-full flex items-center justify-center"
+                      imgClass=""
+                      action={(
+                        user ? (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={(e) => { e.stopPropagation(); toggleFavorite(book.id, 'book'); }}
+                            className={`absolute right-3 top-3 z-20 h-9 w-9 rounded-full bg-transparent p-0 hover:bg-transparent focus-visible:ring-0 transition-all duration-300 ${isPinned ? 'text-red-500' : 'text-[#D9D9D9]'}`}
+                            aria-label={isPinned ? 'Unfavorite book' : 'Favorite book'}
+                          >
+                            <Heart className={`h-6 w-6 ${isPinned ? 'fill-current' : ''}`} />
+                          </Button>
+                        ) : null
+                      )}
+                    />
+                  )}
                 </div>
-                <div className="relative z-10 text-center">
-                  <BookOpen className="w-16 h-16 text-white mx-auto mb-3 transition-transform duration-300 group-hover:scale-110" />
-                  <h3 className="text-white font-bold text-lg line-clamp-2">
+
+                <div className="mt-[11px]">
+                  <h3 className="line-clamp-2 text-[18px] sm:text-[20px] md:text-[22px] font-semibold leading-[1.2] text-[#450BC8]">
                     {book.title}
                   </h3>
+                  <p className="mt-2 text-[12px] sm:text-[13px] leading-[1.35] text-[rgba(31,22,15,0.64)] line-clamp-3">
+                    {book.description}
+                  </p>
+                </div>
+
+                <div className="mt-auto flex items-end justify-between pt-3">
+                  <span className="text-[12px] sm:text-[13px] font-semibold text-[#450BC8]">
+                      {book.author}
+                    </span>
+                  <Button
+                    size="sm"
+                    className="h-9 sm:h-10 w-[120px] sm:w-[140px] rounded-[16px] bg-[#450BC8] px-0 text-[13px] sm:text-[14px] md:text-[15px] font-semibold text-white hover:bg-[#450BC8]/90"
+                    onClick={(e) => { e.stopPropagation(); /* link via parent */ }}
+                  >
+                    READ
+                  </Button>
                 </div>
               </div>
-            )}
-
-            <CardContent className="p-6">
-              <p className="text-sm font-semibold text-gray-700 mb-2">
-                by {book.author}
-              </p>
-              <p className="text-sm text-gray-600 mb-3 line-clamp-3">
-                {book.description}
-              </p>
-              <div className="flex items-center justify-between">
-                <span
-                  className="text-xs font-semibold px-3 py-1 rounded-full"
-                  style={{
-                    backgroundColor: `${book.cover_color}20`,
-                    color: book.cover_color,
-                  }}
-                >
-                  {book.genre}
-                </span>
-              </div>
-            </CardContent>
             </Card>
           </Link>
         );

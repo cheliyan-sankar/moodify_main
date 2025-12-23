@@ -7,6 +7,7 @@ import { Pin, BookOpen, Star } from 'lucide-react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-context';
+import { useFavorites } from '@/lib/favorites-context';
 
 type Book = {
   id: string;
@@ -28,15 +29,12 @@ type MoodBasedBooksProps = {
 
 export function MoodBasedBooks({ moodResult, showAll = false, limit = 6 }: MoodBasedBooksProps) {
   const { user } = useAuth();
+  const { favoritesSet, toggleFavorite } = useFavorites();
   const [books, setBooks] = useState<Book[]>([]);
-  const [pinnedBooks, setPinnedBooks] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchBooks();
-    if (user) {
-      fetchPinnedBooks();
-    }
   }, [user, moodResult, showAll]);
 
   const fetchBooks = async () => {
@@ -62,61 +60,7 @@ export function MoodBasedBooks({ moodResult, showAll = false, limit = 6 }: MoodB
     }
   };
 
-  const fetchPinnedBooks = async () => {
-    if (!user) return;
-
-    try {
-      const { data, error } = await supabase
-        .from('user_favorites')
-        .select('item_id')
-        .eq('user_id', user.id)
-        .eq('item_type', 'book');
-
-      if (error) throw error;
-      setPinnedBooks(new Set(data?.map((f: any) => f.item_id) || []));
-    } catch (error) {
-      console.error('Error fetching pinned books:', error);
-    }
-  };
-
-  const togglePin = async (bookId: string) => {
-    if (!user) return;
-
-    try {
-      const isPinned = pinnedBooks.has(bookId);
-
-      if (isPinned) {
-        const { error } = await supabase
-          .from('user_favorites')
-          .delete()
-          .eq('user_id', user.id)
-          .eq('item_type', 'book')
-          .eq('item_id', bookId);
-
-        if (error) throw error;
-
-        const newPinned = new Set(pinnedBooks);
-        newPinned.delete(bookId);
-        setPinnedBooks(newPinned);
-      } else {
-        const { error } = await supabase
-          .from('user_favorites')
-          .insert({
-            user_id: user.id,
-            item_type: 'book',
-            item_id: bookId,
-          });
-
-        if (error) throw error;
-
-        const newPinned = new Set(pinnedBooks);
-        newPinned.add(bookId);
-        setPinnedBooks(newPinned);
-      }
-    } catch (error) {
-      console.error('Error toggling pin:', error);
-    }
-  };
+  // Favorites handled by useFavorites()
 
   if (loading) {
     return (
@@ -151,7 +95,7 @@ export function MoodBasedBooks({ moodResult, showAll = false, limit = 6 }: MoodB
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {books.map((book, index) => {
-        const isPinned = pinnedBooks.has(book.id);
+        const isPinned = favoritesSet.has(book.id);
         return (
           <Link key={book.id} href={`/books/${book.id}`}>
             <Card
@@ -162,7 +106,7 @@ export function MoodBasedBooks({ moodResult, showAll = false, limit = 6 }: MoodB
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => togglePin(book.id)}
+                onClick={() => toggleFavorite(book.id, 'book')}
                 className={`absolute top-4 right-4 z-10 transition-all duration-300 ${
                   isPinned
                     ? 'text-white bg-white/20 backdrop-blur-sm hover:bg-white/30'

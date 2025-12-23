@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-context';
+import { useFavorites } from '@/lib/favorites-context';
 import { ProtectedRoute } from '@/components/protected-route';
 import { AppFooter } from '@/components/app-footer';
 
@@ -37,14 +38,11 @@ function BookDetailContent() {
   
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isPinned, setIsPinned] = useState(false);
+  const { favoritesSet, toggleFavorite } = useFavorites();
   const [coverAvailable, setCoverAvailable] = useState<boolean>(false);
 
   useEffect(() => {
     fetchBook();
-    if (user) {
-      checkIfPinned();
-    }
   }, [bookId, user]);
 
   const fetchBook = async () => {
@@ -77,52 +75,10 @@ function BookDetailContent() {
     }
   };
 
-  const checkIfPinned = async () => {
-    if (!user) return;
-    try {
-      const { data, error } = await supabase
-        .from('user_favorites')
-        .select('item_id')
-        .eq('user_id', user.id)
-        .eq('item_type', 'book')
-        .eq('item_id', bookId)
-        .maybeSingle();
-
-      if (!error && data) {
-        setIsPinned(true);
-      }
-    } catch (error) {
-      console.error('Error checking pinned status:', error);
-    }
-  };
-
+  const isPinned = favoritesSet.has(bookId);
   const togglePin = async () => {
     if (!user) return;
-
-    try {
-      if (isPinned) {
-        await supabase
-          .from('user_favorites')
-          .delete()
-          .eq('user_id', user.id)
-          .eq('item_type', 'book')
-          .eq('item_id', bookId);
-
-        setIsPinned(false);
-      } else {
-        await supabase
-          .from('user_favorites')
-          .insert({
-            user_id: user.id,
-            item_type: 'book',
-            item_id: bookId,
-          });
-
-        setIsPinned(true);
-      }
-    } catch (error) {
-      console.error('Error toggling pin:', error);
-    }
+    await toggleFavorite(bookId, 'book');
   };
 
   const handleShare = async () => {
