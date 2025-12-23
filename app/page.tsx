@@ -3,9 +3,11 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Sparkles, ClipboardList, LogOut, User as UserIcon, Menu, X } from 'lucide-react';
+import { Sparkles, ClipboardList, LogOut, User as UserIcon, Menu, X, Flame } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
+import { useStreak } from '@/hooks/use-streak';
+import { generateInitials, getAvatarColor, getAvatarTextColor } from '@/lib/streak-utils';
 import { AuthModal } from '@/components/auth-modal';
 import { GoogleSignInPopup } from '@/components/google-signin-popup';
 import { TestimonialCarousel } from '@/components/testimonial-carousel';
@@ -40,12 +42,18 @@ type Game = {
 
 export default function Home() {
   const { user, signOut } = useAuth();
+  const { streakData } = useStreak();
   const router = useRouter();
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [recommendations, setRecommendations] = useState<any[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
+
+  const displayName = user?.user_metadata?.full_name || user?.email || 'User';
+  const initials = generateInitials(displayName);
+  const bgColor = getAvatarColor(displayName);
+  const textColor = getAvatarTextColor(displayName);
 
   useEffect(() => {
     let cancelled = false;
@@ -262,9 +270,17 @@ export default function Home() {
               {user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button className="bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: '#E2DAF5' }}>
-                        <UserIcon className="w-4 h-4" style={{ color: '#3C1F71' }} />
+                    <Button className="p-0 bg-transparent hover:bg-transparent">
+                      <div className="relative">
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm ${bgColor} ${textColor} border-2 border-purple-200`}>
+                          {initials}
+                        </div>
+                        {streakData?.currentStreak > 0 && (
+                          <div className="absolute -bottom-2 -right-2 bg-white rounded-full px-2 py-1 shadow-md border border-gray-200 flex items-center gap-1">
+                            <Flame className="w-3 h-3" style={{ color: '#FF6B35' }} />
+                            <span className="text-xs font-bold" style={{ color: '#FF6B35' }}>{streakData.currentStreak}</span>
+                          </div>
+                        )}
                       </div>
                     </Button>
                   </DropdownMenuTrigger>
@@ -451,9 +467,9 @@ export default function Home() {
 
                 return (
                   <Link key={g.id} href={`/games/${slug}`} className="md:col-span-1">
-                    <div className="bg-secondary/50 shadow-lg hover:shadow-xl transition-all h-full rounded-[32px] p-3">
-                      <div className="bg-white rounded-[32px] overflow-hidden h-full flex flex-col min-h-[240px]">
-                        <div className="relative h-[96px] bg-muted-foreground/15 flex items-center justify-center overflow-hidden">
+                        <div className="bg-secondary/50 shadow-lg hover:shadow-xl transition-all h-full rounded-[24px] p-3">
+                          <div className="bg-white rounded-[24px] overflow-hidden h-full flex flex-col min-h-[240px]">
+                        <div className="relative h-[135px] bg-muted-foreground/15 flex items-center justify-center overflow-hidden rounded-t-[24px]">
                           {g.cover_image_url ? (
                             <img src={g.cover_image_url} alt={g.title} className="absolute inset-0 w-full h-full object-cover" />
                           ) : (
@@ -470,7 +486,7 @@ export default function Home() {
                           <p className="text-sm text-primary/60 leading-relaxed line-clamp-4">{g.description}</p>
 
                           <div className="mt-auto pt-3 flex justify-center">
-                            <Button className="w-[120px] h-[32px] px-0 rounded-full bg-primary text-white hover:bg-primary/90 text-sm font-semibold leading-none">
+                            <Button size="sm" className="w-[70px] h-[22px] rounded-[11px] bg-[#450BC8] text-[12px]">
                               Start Now
                             </Button>
                           </div>
@@ -484,9 +500,9 @@ export default function Home() {
               // fallback static content if no popular games set
               <>
                 <Link href="/games/box-breathing" className="md:col-span-1">
-                  <div className="bg-secondary/50 shadow-lg hover:shadow-xl transition-all h-full rounded-[32px] p-3">
-                    <div className="bg-white rounded-[32px] overflow-hidden h-full flex flex-col min-h-[240px]">
-                      <div className="relative h-[96px] bg-muted-foreground/15 flex items-center justify-center overflow-hidden">
+                  <div className="bg-secondary/50 shadow-lg hover:shadow-xl transition-all h-full rounded-[24px] p-3">
+                    <div className="bg-white rounded-[24px] overflow-hidden h-full flex flex-col min-h-[240px]">
+                      <div className="relative h-[135px] bg-muted-foreground/15 flex items-center justify-center overflow-hidden rounded-t-[24px]">
                         <span className="text-6xl" aria-hidden>
                           🫁
                         </span>
@@ -498,7 +514,7 @@ export default function Home() {
                         </h3>
                         <p className="text-sm text-primary/60 leading-relaxed line-clamp-4">A simple breathing technique supported by CBT principles to help reduce stress.</p>
                         <div className="mt-auto pt-3 flex justify-center">
-                          <Button className="w-[120px] h-[32px] px-0 rounded-full bg-primary text-white hover:bg-primary/90 text-sm font-semibold leading-none">
+                          <Button size="sm" className="w-[70px] h-[22px] rounded-[11px] bg-[#450BC8] text-[12px]">
                             Start Now
                           </Button>
                         </div>
@@ -508,9 +524,9 @@ export default function Home() {
                 </Link>
 
                 <Link href="/games/diaphragmatic-breathing" className="md:col-span-1">
-                  <div className="bg-secondary/50 shadow-lg hover:shadow-xl transition-all h-full rounded-[32px] p-3">
-                    <div className="bg-white rounded-[32px] overflow-hidden h-full flex flex-col min-h-[240px]">
-                      <div className="relative h-[96px] bg-muted-foreground/15 flex items-center justify-center overflow-hidden">
+                  <div className="bg-secondary/50 shadow-lg hover:shadow-xl transition-all h-full rounded-[24px] p-3">
+                    <div className="bg-white rounded-[24px] overflow-hidden h-full flex flex-col min-h-[240px]">
+                      <div className="relative h-[135px] bg-muted-foreground/15 flex items-center justify-center overflow-hidden rounded-t-[24px]">
                         <span className="text-6xl" aria-hidden>
                           💨
                         </span>
@@ -522,7 +538,7 @@ export default function Home() {
                         </h3>
                         <p className="text-sm text-primary/60 leading-relaxed line-clamp-4">Deep belly breathing that activates your parasympathetic nervous system for instant calm.</p>
                         <div className="mt-auto pt-3 flex justify-center">
-                          <Button className="w-[120px] h-[32px] px-0 rounded-full bg-primary text-white hover:bg-primary/90 text-sm font-semibold leading-none">
+                          <Button size="sm" className="w-[70px] h-[22px] rounded-[11px] bg-[#450BC8] text-[12px]">
                             Start Now
                           </Button>
                         </div>
@@ -532,9 +548,9 @@ export default function Home() {
                 </Link>
 
                 <Link href="/games/four-seven-eight-breathing" className="md:col-span-1">
-                  <div className="bg-secondary/50 shadow-lg hover:shadow-xl transition-all h-full rounded-[32px] p-3">
-                    <div className="bg-white rounded-[32px] overflow-hidden h-full flex flex-col min-h-[240px]">
-                      <div className="relative h-[96px] bg-muted-foreground/15 flex items-center justify-center overflow-hidden">
+                  <div className="bg-secondary/50 shadow-lg hover:shadow-xl transition-all h-full rounded-[24px] p-3">
+                    <div className="bg-white rounded-[24px] overflow-hidden h-full flex flex-col min-h-[240px]">
+                      <div className="relative h-[135px] bg-muted-foreground/15 flex items-center justify-center overflow-hidden rounded-t-[24px]">
                         <span className="text-6xl" aria-hidden>
                           🌙
                         </span>
@@ -546,7 +562,7 @@ export default function Home() {
                         </h3>
                         <p className="text-sm text-primary/60 leading-relaxed line-clamp-4">The famous 4-7-8 technique for anxiety relief and better sleep.</p>
                         <div className="mt-auto pt-3 flex justify-center">
-                          <Button className="w-[120px] h-[32px] px-0 rounded-full bg-primary text-white hover:bg-primary/90 text-sm font-semibold leading-none">
+                          <Button size="sm" className="w-[70px] h-[22px] rounded-[11px] bg-[#450BC8] text-[12px]">
                             Start Now
                           </Button>
                         </div>
@@ -596,7 +612,7 @@ export default function Home() {
             <h2 className="section-title font-bold text-primary mb-4">
               What Mental Health Professionals Say
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Feedback from mental health professionals on how MoodLift supports emotional awareness and self-care.
             </p>
           </div>

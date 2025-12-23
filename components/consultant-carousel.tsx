@@ -252,7 +252,7 @@ export default function ConsultantCarousel() {
       <h2 className="section-title font-semibold text-primary mb-4 text-center">
         Need Professional Support?
       </h2>
-      <p className="text-xl text-muted-foreground max-w-2xl mx-auto text-center mb-4">
+      <p className="text-lg text-muted-foreground max-w-2xl mx-auto text-center mb-4">
         Connect with <span className="font-semibold">CERTIFIED Mental Health Counsellors</span> from Hexpertify.
       </p>
       {children}
