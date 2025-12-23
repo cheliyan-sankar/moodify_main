@@ -275,7 +275,7 @@ export default function Home() {
                         <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm ${bgColor} ${textColor} border-2 border-purple-200`}>
                           {initials}
                         </div>
-                        {streakData?.currentStreak > 0 && (
+                        {streakData?.currentStreak && streakData.currentStreak > 0 && (
                           <div className="absolute -bottom-2 -right-2 bg-white rounded-full px-2 py-1 shadow-md border border-gray-200 flex items-center gap-1">
                             <Flame className="w-3 h-3" style={{ color: '#FF6B35' }} />
                             <span className="text-xs font-bold" style={{ color: '#FF6B35' }}>{streakData.currentStreak}</span>
@@ -467,29 +467,24 @@ export default function Home() {
 
                 return (
                   <Link key={g.id} href={`/games/${slug}`} className="md:col-span-1">
-                        <div className="bg-secondary/50 shadow-lg hover:shadow-xl transition-all h-full rounded-[24px] p-3">
-                          <div className="bg-white rounded-[24px] overflow-hidden h-full flex flex-col min-h-[240px]">
-                        <div className="relative h-[135px] bg-muted-foreground/15 flex items-center justify-center overflow-hidden rounded-t-[24px]">
+                    <div className="text-card-foreground group relative w-full max-w-[420px] aspect-square rounded-[24px] bg-white border-0 shadow-[0_8px_16px_rgba(75,52,37,0.05)] overflow-hidden animate-in fade-in-50 slide-in-from-bottom-4 cursor-pointer">
+                      <div className="flex h-full flex-col p-4 sm:p-5">
+                        <div className="relative h-[46%] w-full overflow-hidden rounded-[24px] bg-[#D9D9D9]">
                           {g.cover_image_url ? (
                             <img src={g.cover_image_url} alt={g.title} className="absolute inset-0 w-full h-full object-cover" />
                           ) : (
-                            <span className="text-6xl" aria-hidden>
-                              {getIconComponent(g.icon)}
-                            </span>
+                            <div className="h-full w-full relative bg-gray-100 flex items-center justify-center">
+                              <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-600">{g.title.charAt(0).toUpperCase()}</div>
+                            </div>
                           )}
                         </div>
-
-                        <div className="px-6 pb-6 pt-3 flex-1 flex flex-col gap-3">
-                          <h3 className="line-clamp-2 capitalize text-[18px] sm:text-[20px] md:text-[22px] font-semibold leading-[1.2] text-[#450BC8] text-center">
-                            {g.title}
-                          </h3>
-                          <p className="text-sm text-primary/60 leading-relaxed line-clamp-4">{g.description}</p>
-
-                          <div className="mt-auto pt-3 flex justify-center">
-                            <Button size="sm" className="w-[70px] h-[22px] rounded-[11px] bg-[#450BC8] text-[12px]">
-                              Start Now
-                            </Button>
-                          </div>
+                        <div className="mt-[11px]">
+                          <h3 className="line-clamp-2 text-[18px] sm:text-[20px] md:text-[22px] font-semibold leading-[1.2] text-[#450BC8]">{g.title}</h3>
+                          <p className="mt-2 line-clamp-3 text-[12px] sm:text-[13px] leading-[1.35] text-[rgba(31,22,15,0.64)]">{g.description}</p>
+                        </div>
+                        <div className="mt-auto flex items-end justify-between pt-3">
+                          <span className="text-[12px] sm:text-[13px] font-semibold text-[#450BC8]">{g.category}</span>
+                          <button className="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-8 sm:h-9 w-[120px] sm:w-[140px] rounded-[16px] bg-[#450BC8] px-0 text-[13px] sm:text-[14px] font-semibold text-white hover:bg-[#450BC8]/90">PLAY NOW</button>
                         </div>
                       </div>
                     </div>
@@ -500,72 +495,58 @@ export default function Home() {
               // fallback static content if no popular games set
               <>
                 <Link href="/games/box-breathing" className="md:col-span-1">
-                  <div className="bg-secondary/50 shadow-lg hover:shadow-xl transition-all h-full rounded-[24px] p-3">
-                    <div className="bg-white rounded-[24px] overflow-hidden h-full flex flex-col min-h-[240px]">
-                      <div className="relative h-[135px] bg-muted-foreground/15 flex items-center justify-center overflow-hidden rounded-t-[24px]">
-                        <span className="text-6xl" aria-hidden>
-                          🫁
-                        </span>
-                      </div>
-
-                      <div className="px-6 pb-6 pt-3 flex-1 flex flex-col gap-3">
-                        <h3 className="line-clamp-2 capitalize text-[18px] sm:text-[20px] md:text-[22px] font-semibold leading-[1.2] text-[#450BC8] text-center">
-                          Box Breathing
-                        </h3>
-                        <p className="text-sm text-primary/60 leading-relaxed line-clamp-4">A simple breathing technique supported by CBT principles to help reduce stress.</p>
-                        <div className="mt-auto pt-3 flex justify-center">
-                          <Button size="sm" className="w-[70px] h-[22px] rounded-[11px] bg-[#450BC8] text-[12px]">
-                            Start Now
-                          </Button>
+                  <div className="text-card-foreground group relative w-full max-w-[420px] aspect-square rounded-[24px] bg-white border-0 shadow-[0_8px_16px_rgba(75,52,37,0.05)] overflow-hidden animate-in fade-in-50 slide-in-from-bottom-4 cursor-pointer">
+                    <div className="flex h-full flex-col p-4 sm:p-5">
+                      <div className="relative h-[46%] w-full overflow-hidden rounded-[24px] bg-[#D9D9D9]">
+                        <div className="h-full w-full relative bg-gray-100 flex items-center justify-center">
+                          <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-600">B</div>
                         </div>
+                      </div>
+                      <div className="mt-[11px]">
+                        <h3 className="line-clamp-2 text-[18px] sm:text-[20px] md:text-[22px] font-semibold leading-[1.2] text-[#450BC8]">Box Breathing</h3>
+                        <p className="mt-2 line-clamp-3 text-[12px] sm:text-[13px] leading-[1.35] text-[rgba(31,22,15,0.64)]">A simple breathing technique supported by CBT principles to help reduce stress.</p>
+                      </div>
+                      <div className="mt-auto flex items-end justify-between pt-3">
+                        <span className="text-[12px] sm:text-[13px] font-semibold text-[#450BC8]">Breathing</span>
+                        <button className="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-8 sm:h-9 w-[120px] sm:w-[140px] rounded-[16px] bg-[#450BC8] px-0 text-[13px] sm:text-[14px] font-semibold text-white hover:bg-[#450BC8]/90">PLAY NOW</button>
                       </div>
                     </div>
                   </div>
                 </Link>
 
                 <Link href="/games/diaphragmatic-breathing" className="md:col-span-1">
-                  <div className="bg-secondary/50 shadow-lg hover:shadow-xl transition-all h-full rounded-[24px] p-3">
-                    <div className="bg-white rounded-[24px] overflow-hidden h-full flex flex-col min-h-[240px]">
-                      <div className="relative h-[135px] bg-muted-foreground/15 flex items-center justify-center overflow-hidden rounded-t-[24px]">
-                        <span className="text-6xl" aria-hidden>
-                          💨
-                        </span>
+                  <div className="text-card-foreground group relative w-full max-w-[420px] aspect-square rounded-[24px] bg-white border-0 shadow-[0_8px_16px_rgba(75,52,37,0.05)] overflow-hidden animate-in fade-in-50 slide-in-from-bottom-4 cursor-pointer">
+                    <div className="flex h-full flex-col p-4 sm:p-5">
+                      <div className="relative h-[46%] w-full overflow-hidden rounded-[24px] bg-[#D9D9D9]">
+                        <img src="https://vsarsdunppymyunnjmqk.supabase.co/storage/v1/object/public/assets/1766410867830-download (3).jfif" alt="Diaphragmatic Breathing" className="absolute inset-0 w-full h-full object-cover" />
                       </div>
-
-                      <div className="px-6 pb-6 pt-3 flex-1 flex flex-col gap-3">
-                        <h3 className="line-clamp-2 capitalize text-[18px] sm:text-[20px] md:text-[22px] font-semibold leading-[1.2] text-[#450BC8] text-center">
-                          Diaphragmatic Breathing
-                        </h3>
-                        <p className="text-sm text-primary/60 leading-relaxed line-clamp-4">Deep belly breathing that activates your parasympathetic nervous system for instant calm.</p>
-                        <div className="mt-auto pt-3 flex justify-center">
-                          <Button size="sm" className="w-[70px] h-[22px] rounded-[11px] bg-[#450BC8] text-[12px]">
-                            Start Now
-                          </Button>
-                        </div>
+                      <div className="mt-[11px]">
+                        <h3 className="line-clamp-2 text-[18px] sm:text-[20px] md:text-[22px] font-semibold leading-[1.2] text-[#450BC8]">Diaphragmatic Breathing</h3>
+                        <p className="mt-2 line-clamp-3 text-[12px] sm:text-[13px] leading-[1.35] text-[rgba(31,22,15,0.64)]">Deep belly breathing that activates your parasympathetic nervous system for instant calm and stress relief.</p>
+                      </div>
+                      <div className="mt-auto flex items-end justify-between pt-3">
+                        <span className="text-[12px] sm:text-[13px] font-semibold text-[#450BC8]">Breathing</span>
+                        <button className="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-8 sm:h-9 w-[120px] sm:w-[140px] rounded-[16px] bg-[#450BC8] px-0 text-[13px] sm:text-[14px] font-semibold text-white hover:bg-[#450BC8]/90">PLAY NOW</button>
                       </div>
                     </div>
                   </div>
                 </Link>
 
                 <Link href="/games/four-seven-eight-breathing" className="md:col-span-1">
-                  <div className="bg-secondary/50 shadow-lg hover:shadow-xl transition-all h-full rounded-[24px] p-3">
-                    <div className="bg-white rounded-[24px] overflow-hidden h-full flex flex-col min-h-[240px]">
-                      <div className="relative h-[135px] bg-muted-foreground/15 flex items-center justify-center overflow-hidden rounded-t-[24px]">
-                        <span className="text-6xl" aria-hidden>
-                          🌙
-                        </span>
-                      </div>
-
-                      <div className="px-6 pb-6 pt-3 flex-1 flex flex-col gap-3">
-                        <h3 className="line-clamp-2 capitalize text-[18px] sm:text-[20px] md:text-[22px] font-semibold leading-[1.2] text-[#450BC8] text-center">
-                          4-7-8 Breathing
-                        </h3>
-                        <p className="text-sm text-primary/60 leading-relaxed line-clamp-4">The famous 4-7-8 technique for anxiety relief and better sleep.</p>
-                        <div className="mt-auto pt-3 flex justify-center">
-                          <Button size="sm" className="w-[70px] h-[22px] rounded-[11px] bg-[#450BC8] text-[12px]">
-                            Start Now
-                          </Button>
+                  <div className="text-card-foreground group relative w-full max-w-[420px] aspect-square rounded-[24px] bg-white border-0 shadow-[0_8px_16px_rgba(75,52,37,0.05)] overflow-hidden animate-in fade-in-50 slide-in-from-bottom-4 cursor-pointer">
+                    <div className="flex h-full flex-col p-4 sm:p-5">
+                      <div className="relative h-[46%] w-full overflow-hidden rounded-[24px] bg-[#D9D9D9]">
+                        <div className="h-full w-full relative bg-gray-100 flex items-center justify-center">
+                          <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-600">4</div>
                         </div>
+                      </div>
+                      <div className="mt-[11px]">
+                        <h3 className="line-clamp-2 text-[18px] sm:text-[20px] md:text-[22px] font-semibold leading-[1.2] text-[#450BC8]">4-7-8 Breathing</h3>
+                        <p className="mt-2 line-clamp-3 text-[12px] sm:text-[13px] leading-[1.35] text-[rgba(31,22,15,0.64)]">The famous 4-7-8 technique for anxiety relief and better sleep.</p>
+                      </div>
+                      <div className="mt-auto flex items-end justify-between pt-3">
+                        <span className="text-[12px] sm:text-[13px] font-semibold text-[#450BC8]">Breathing</span>
+                        <button className="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-8 sm:h-9 w-[120px] sm:w-[140px] rounded-[16px] bg-[#450BC8] px-0 text-[13px] sm:text-[14px] font-semibold text-white hover:bg-[#450BC8]/90">PLAY NOW</button>
                       </div>
                     </div>
                   </div>
