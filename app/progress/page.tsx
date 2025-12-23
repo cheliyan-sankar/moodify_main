@@ -216,44 +216,7 @@ function ProgressContent() {
           </CardContent>
         </Card>
 
-        <Card className="border-2 mb-8">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-accent" />
-              Todo List
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex gap-2">
-                <input
-                  value={newTodo}
-                  onChange={(e) => setNewTodo(e.target.value)}
-                  onKeyDown={(e) => { if (e.key === 'Enter') addTodo(); }}
-                  placeholder="Add a quick task (e.g., Play a 5-min breathing game)"
-                  className="flex-1 px-3 py-2 rounded border bg-white text-primary"
-                />
-                <Button onClick={addTodo} className="whitespace-nowrap">Add</Button>
-              </div>
-
-              <div className="space-y-2">
-                {todos.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">No todos yet. Add one to stay focused.</p>
-                ) : (
-                  todos.map(t => (
-                    <div key={t.id} className="flex items-center justify-between p-2 bg-secondary/20 rounded">
-                      <div className="flex items-center gap-3">
-                        <input type="checkbox" checked={t.done} onChange={() => toggleTodo(t.id)} />
-                        <span className={`${t.done ? 'line-through text-muted-foreground' : 'text-primary'}`}>{t.text}</span>
-                      </div>
-                      <Button variant="ghost" onClick={() => removeTodo(t.id)}>Remove</Button>
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Todo List moved to Dashboard page */}
 
         <Card className="bg-gradient-to-r from-primary to-accent text-white border-0">
           <CardContent className="p-4 sm:p-6 md:p-8 text-center">

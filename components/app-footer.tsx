@@ -15,9 +15,11 @@ export function AppFooter() {
                 MoodLift
               </span>
             </div>
-            <p className="text-sm text-muted-foreground">
-              Your AI-powered companion for emotional wellness and mental health support.
-            </p>
+            <div className="text-sm text-muted-foreground space-y-2">
+              <p>
+                Moodify helps you understand and improve your mood through simple & Science backed wellness games, calming exercises, and mindful activities designed for everyday emotional balance.
+              </p>
+            </div>
           </div>
 
           <div>
@@ -43,11 +45,7 @@ export function AppFooter() {
                   Dashboard
                 </Link>
               </li>
-              <li>
-                <Link href="/progress" className="hover:text-primary transition-colors">
-                  Track Progress
-                </Link>
-              </li>
+              {/* Progress page removed */}
             </ul>
           </div>
 

@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Pin, BookOpen, Heart } from 'lucide-react';
@@ -23,6 +25,7 @@ type FavoriteItem = {
 
 export function FavoritesSection() {
   const { user } = useAuth();
+  const router = useRouter();
   const [favorites, setFavorites] = useState<FavoriteItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -220,16 +223,25 @@ export function FavoritesSection() {
                 {isGame ? (
                   <Button
                     size="sm"
-                    className="h-7 sm:h-8 w-[100px] sm:w-[120px] rounded-[14px] bg-[#450BC8] px-0 text-[10px] sm:text-[11px] font-semibold text-white hover:bg-[#450BC8]/90"
-                    onClick={(e) => { e.stopPropagation(); /* could navigate to game */ }}
+                            className="h-7 sm:h-8 w-[100px] sm:w-[120px] rounded-[14px] bg-[#450BC8] px-0 text-[10px] sm:text-[11px] font-semibold text-white hover:bg-[#450BC8]/90"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              // Navigate to game page - create a slug from title if available
+                              const slugify = (s: string) => s.toLowerCase().replace(/[^a-z0-9\-\s]/g, '').trim().replace(/\s+/g, '-');
+                              const path = item.title ? `/games/${slugify(item.title)}` : `/games/${item.id}`;
+                              router.push(path);
+                            }}
                   >
                     PLAY NOW
                   </Button>
                 ) : (
                   <Button
                     size="sm"
-                    className="h-7 sm:h-8 w-[100px] sm:w-[120px] rounded-[14px] bg-[#450BC8] px-0 text-[10px] sm:text-[11px] font-semibold text-white hover:bg-[#450BC8]/90"
-                    onClick={(e) => { e.stopPropagation(); /* could open book */ }}
+                            className="h-7 sm:h-8 w-[100px] sm:w-[120px] rounded-[14px] bg-[#450BC8] px-0 text-[10px] sm:text-[11px] font-semibold text-white hover:bg-[#450BC8]/90"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              router.push(`/books/${item.id}`);
+                            }}
                   >
                     READ
                   </Button>

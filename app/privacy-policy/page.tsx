@@ -27,134 +27,100 @@ export default function PrivacyPolicyPage() {
           </CardHeader>
 
           <CardContent className="space-y-6 text-sm text-muted-foreground">
-            <p>
-              Your privacy is important to us. This Privacy Policy explains how Moodify collects, uses, stores, and
-              protects your information when you use our platform.
-            </p>
+            <p className="font-medium">Last Updated: 23/12/2025</p>
 
             <p>
-              Moodify is a sub-brand and specialized emotional wellness platform operated under Hexpertify, which is the
-              parent company. This policy applies specifically to Moodify and its services.
+              Moodify respects your privacy and is committed to protecting your personal information. This Privacy
+              Policy explains how we collect, use, store, and protect your data when you use our platform.
             </p>
 
-            <div>
-              <h2 className="text-base font-semibold text-primary mb-2">Information We Collect</h2>
-              <p className="mb-4">We may collect the following types of information to provide and improve our services:</p>
-
-              <div className="space-y-4">
-                <div>
-                  <h3 className="font-semibold text-foreground">1. Personal Information</h3>
-                  <ul className="list-disc pl-5 mt-2 space-y-2">
-                    <li>Name (if provided)</li>
-                    <li>Email address</li>
-                    <li>Basic account details</li>
-                  </ul>
-                </div>
-
-                <div>
-                  <h3 className="font-semibold text-foreground">2. Emotional &amp; Usage Data</h3>
-                  <ul className="list-disc pl-5 mt-2 space-y-2">
-                    <li>Mood inputs and session interactions</li>
-                    <li>Self-reflection responses entered by the user</li>
-                    <li>Platform usage data (pages visited, session duration, feature usage)</li>
-                  </ul>
-                  <p className="mt-3">Moodify does not collect sensitive medical records or clinical diagnoses.</p>
-                </div>
-              </div>
-            </div>
+            <p>By accessing or using Moodify, you agree to the practices described in this policy.</p>
 
             <div>
-              <h2 className="text-base font-semibold text-primary mb-2">How We Use Your Information</h2>
-              <p className="mb-3">We use the collected information to:</p>
-              <ul className="list-disc pl-5 space-y-2">
-                <li>Deliver personalized mood and wellness sessions</li>
-                <li>Improve user experience and platform functionality</li>
-                <li>Monitor platform performance and security</li>
-                <li>Communicate important updates related to your account or sessions</li>
+              <h2 className="text-base font-semibold text-primary mb-2">1. Information We Collect</h2>
+              <p className="mb-2">We may collect the following types of information:</p>
+
+              <h3 className="font-semibold">a) Information You Provide</h3>
+              <ul className="list-disc pl-5 mb-3">
+                <li>Name, email address, or account details (if applicable)</li>
+                <li>Responses to mood check-ins, wellness activities, or games</li>
+                <li>Feedback or communications shared with us</li>
               </ul>
-              <p className="mt-3">Your data is never used for advertising manipulation or sold to third parties.</p>
-            </div>
 
-            <div>
-              <h2 className="text-base font-semibold text-primary mb-2">Data Sharing &amp; Disclosure</h2>
-              <p className="mb-3">We do not sell, rent, or trade your personal data.</p>
-              <p className="mb-3">Information may be shared only:</p>
-              <ul className="list-disc pl-5 space-y-2">
-                <li>When required by law or legal process</li>
-                <li>To protect the rights, safety, or security of users and the platform</li>
-                <li>
-                  With trusted technical service providers strictly for platform operation (under confidentiality
-                  agreements)
-                </li>
+              <h3 className="font-semibold">b) Automatically Collected Information</h3>
+              <ul className="list-disc pl-5">
+                <li>Device and browser information</li>
+                <li>Usage data such as pages visited and interactions</li>
+                <li>Cookies or similar technologies for functionality and analytics</li>
               </ul>
             </div>
 
             <div>
-              <h2 className="text-base font-semibold text-primary mb-2">Relationship with Hexpertify</h2>
-              <p className="mb-3">
-                Moodify operates independently for emotional wellness sessions but is part of the Hexpertify ecosystem.
-              </p>
-              <ul className="list-disc pl-5 space-y-2">
-                <li>Hexpertify manages expert-led consultations and professional services</li>
-                <li>Moodify focuses on self-guided emotional and mood-based support</li>
+              <h2 className="text-base font-semibold text-primary mb-2">2. How We Use Your Information</h2>
+              <p className="mb-2">We use your information to:</p>
+              <ul className="list-disc pl-5">
+                <li>Provide and maintain the Moodify platform</li>
+                <li>Improve user experience and platform performance</li>
+                <li>Understand usage patterns and engagement</li>
+                <li>Personalize content and activities</li>
+                <li>Communicate updates, tips, or relevant information</li>
+                <li>Conduct internal analytics, research, and product development</li>
+                <li>Support marketing and communication efforts</li>
               </ul>
-              <p className="mt-3">
-                User data from Moodify is not shared with consultants or professionals on Hexpertify unless explicitly
-                initiated by the user.
-              </p>
             </div>
 
             <div>
-              <h2 className="text-base font-semibold text-primary mb-2">Data Security</h2>
-              <p className="mb-3">
-                We implement reasonable technical and organizational measures to protect your data, including:
-              </p>
-              <ul className="list-disc pl-5 space-y-2">
-                <li>Secure storage practices</li>
-                <li>Restricted access to user information</li>
-                <li>Regular monitoring for unauthorized access</li>
+              <h2 className="text-base font-semibold text-primary mb-2">3. Data Sharing and Disclosure</h2>
+              <p className="mb-2">We do not sell, rent, or trade your personal data.</p>
+              <p className="mb-2">Your data may be shared only within our group companies under Hexpertify solely for the purposes of:</p>
+              <ul className="list-disc pl-5 mb-3">
+                <li>Improving user experience</li>
+                <li>Platform optimization and development</li>
+                <li>Internal analytics and research</li>
+                <li>Marketing and communication related to our services</li>
               </ul>
-              <p className="mt-3">
-                However, no digital system is 100% secure, and users are encouraged to use the platform responsibly.
-              </p>
+              <p className="mb-2">All group companies are required to comply with the same data protection and security standards outlined in this policy.</p>
+              <p>We may disclose information if required by law or to protect our legal rights.</p>
             </div>
 
             <div>
-              <h2 className="text-base font-semibold text-primary mb-2">User Control &amp; Choices</h2>
-              <p className="mb-3">You have the right to:</p>
-              <ul className="list-disc pl-5 space-y-2">
-                <li>Access your personal information</li>
-                <li>Request correction or deletion of your data</li>
-                <li>Stop using the platform at any time</li>
+              <h2 className="text-base font-semibold text-primary mb-2">4. Data Security</h2>
+              <p className="mb-2">We implement reasonable technical and organizational measures to protect your data, including secure systems, controlled access, and monitoring practices. While no system can guarantee complete security, we strive to safeguard your information against unauthorized access, loss, or misuse.</p>
+            </div>
+
+            <div>
+              <h2 className="text-base font-semibold text-primary mb-2">5. Cookies and Tracking Technologies</h2>
+              <p>Moodify may use cookies or similar technologies to ensure platform functionality, analyze usage, and improve performance. You can manage cookie preferences through your browser settings.</p>
+            </div>
+
+            <div>
+              <h2 className="text-base font-semibold text-primary mb-2">6. Your Rights and Choices</h2>
+              <p className="mb-2">You have the right to:</p>
+              <ul className="list-disc pl-5 mb-3">
+                <li>Access or update your personal information</li>
+                <li>Request deletion of your data, subject to legal and operational requirements</li>
+                <li>Opt out of non-essential communications</li>
               </ul>
-              <p className="mt-3">
-                Requests related to data management can be raised through official communication channels provided on the
-                platform.
-              </p>
+              <p>To exercise these rights, please contact us using the information provided below.</p>
             </div>
 
             <div>
-              <h2 className="text-base font-semibold text-primary mb-2">Children’s Privacy</h2>
-              <p>
-                Moodify is not intended for use by children under the age of 13. We do not knowingly collect data from
-                minors.
-              </p>
+              <h2 className="text-base font-semibold text-primary mb-2">7. Mental Health Disclaimer</h2>
+              <p>Moodify is a self-care and wellness support platform. It does not provide medical advice, diagnosis, or therapy and should not be considered a substitute for professional mental health care. If you are experiencing severe emotional distress, please seek help from a qualified professional.</p>
             </div>
 
             <div>
-              <h2 className="text-base font-semibold text-primary mb-2">Policy Updates</h2>
-              <p>
-                This Privacy Policy may be updated periodically to reflect platform improvements or legal requirements.
-                Any changes will be clearly communicated within the platform.
-              </p>
+              <h2 className="text-base font-semibold text-primary mb-2">8. Changes to This Policy</h2>
+              <p>We may update this Privacy Policy from time to time. Any changes will be posted on this page with an updated date. Continued use of the platform indicates acceptance of the revised policy.</p>
             </div>
 
             <div>
-              <h2 className="text-base font-semibold text-primary mb-2">Contact Information</h2>
-              <p>
-                For privacy-related questions or concerns, please contact us through the official Moodify or Hexpertify
-                communication channels.
-              </p>
+              <h2 className="text-base font-semibold text-primary mb-2">9. Contact Us</h2>
+              <p>If you have any questions about this Privacy Policy or how your data is handled, please contact us at:</p>
+              <ul className="list-none pl-0 mt-2">
+                <li>Email: <a href="mailto:hexpertifyapp@gmail.com" className="text-primary hover:underline">hexpertifyapp@gmail.com</a></li>
+                <li>Website: <a href="https://hexpertify.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Hexpertify.com</a></li>
+              </ul>
             </div>
 
             <div>

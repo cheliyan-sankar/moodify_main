@@ -10,7 +10,7 @@ export default function AboutPage() {
       <nav className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <h1 className="text-xl font-bold text-primary">About</h1>
+            <h1 className="text-xl font-bold text-primary">About Us</h1>
             <Link href="/">
               <Button size="sm" className="bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white">
                 Home
@@ -23,59 +23,31 @@ export default function AboutPage() {
       <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <Card className="border-2 border-accent/30 bg-white/80 backdrop-blur-sm">
           <CardHeader>
-            <CardTitle className="text-primary">About the Sessions</CardTitle>
+            <CardTitle className="text-primary">About Us</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6 text-sm text-muted-foreground">
-            <p>
-              Moodify sessions are thoughtfully designed to support emotional well-being, mental clarity, and personal
-              balance in a safe and guided digital environment. Each session focuses on helping users understand,
-              regulate, and respond to their emotions through structured self-reflection, mood tracking, guided
-              activities, and evidence-informed techniques.
-            </p>
-
-            <p>
-              These sessions are not random motivational content. They are purpose-driven experiences aimed at:
-            </p>
-
-            <ul className="list-disc pl-5 space-y-2">
-              <li>Improving emotional awareness</li>
-              <li>Supporting stress and anxiety management</li>
-              <li>Encouraging healthy coping mechanisms</li>
-              <li>Promoting consistent mental wellness habits</li>
-            </ul>
-
-            <p>
-              Users can engage with sessions at their own pace, making Moodify suitable for daily emotional check-ins as
-              well as deeper self-soothing and mood regulation practices.
-            </p>
-
-            <div className="pt-2">
-              <h2 className="text-base font-semibold text-primary mb-2">Relationship with Hexpertify</h2>
-              <p className="mb-4">
-                Moodify is a sub-brand and specialized platform under Hexpertify, which is the parent company.
-              </p>
-              <p className="mb-4">
-                While Hexpertify focuses on connecting users with certified professionals and expert-led consultations
-                across domains such as mental health, healthcare, career guidance, and wellness, Moodify is built as a
-                dedicated emotional wellness extension of that ecosystem.
-              </p>
-              <p className="mb-3">In simple terms:</p>
-              <ul className="list-disc pl-5 space-y-2">
-                <li>Hexpertify → Expert-driven, professional consultation platform</li>
-                <li>Moodify → Emotion-focused, self-guided wellness and mood support platform</li>
-              </ul>
-              <p className="mt-4">
-                Both platforms share the same core philosophy: providing reliable, responsible, and meaningful support
-                for personal well-being, while serving different but complementary user needs.
-              </p>
-            </div>
-
-            <div className="pt-2">
-              <h2 className="text-base font-semibold text-primary mb-2">Purpose of Moodify Sessions</h2>
+            <div className="text-sm text-muted-foreground space-y-4">
               <p>
-                Moodify sessions act as a bridge between everyday emotional challenges and professional mental wellness
-                support. For users who may not always require immediate expert consultation, these sessions offer a
-                structured, accessible way to care for their mental and emotional health—anytime, anywhere.
+                Moodify is a Mental wellness platform owned by <a href="https://hexpertify.com" target="_blank" rel="noopener noreferrer" className="font-bold text-primary hover:underline">Hexpertify</a> designed to help people understand, regulate,
+                and improve their mood through simple, engaging activities.
+              </p>
+
+              <p>
+                We believe emotional well-being doesn’t always need long sessions or complicated tools. Sometimes,
+                small moments of awareness, reflection, and play can make a real difference. Moodify brings together
+                <span className="font-semibold"> mood check-ins</span>, <span className="font-semibold">calming exercises</span>, and <span className="font-semibold">science-inspired wellness games</span> to help users feel more balanced
+                in their daily lives.
+              </p>
+
+              <p>
+                Our activities are designed to support emotions like stress, anxiety, sadness, and low motivation, using
+                approaches inspired by <span className="font-semibold">Cognitive Behavioral Techniques</span>, <span className="font-semibold">Mindfulness</span>, and <span className="font-semibold">Nervous system regulation</span>
+                presented in a way that feels light, friendly, and easy to use.
+              </p>
+
+              <p>
+                Moodify is <span className="font-semibold">not a replacement</span> for therapy. It is a supportive self-care space for anyone who wants to
+                pause, check in with themselves, and build healthier emotional habits over time.
               </p>
             </div>
 

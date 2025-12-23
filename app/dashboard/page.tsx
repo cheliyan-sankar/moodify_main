@@ -13,6 +13,7 @@ import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-context';
 import { getUserProgress, getContributionHeatmap } from '@/lib/progress-service';
 import StructuredData from '@/components/structured-data';
+import TodoList from '@/components/todo-list';
 
 interface RecentActivity {
   id: string;
@@ -209,7 +210,7 @@ function DashboardContent() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-3 sm:gap-4 md:gap-6 mb-8 sm:mb-12">
-          <Card className="border-2">
+          <Card className="border-0 bg-white rounded-[24px]" style={{ boxShadow: '0 8px 24px rgba(67,38,122,0.08)' }}>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Calendar className="w-5 h-5 text-accent" />
@@ -253,7 +254,7 @@ function DashboardContent() {
             </CardContent>
           </Card>
 
-          <Card className="border-2">
+          <Card className="border-2 max-w-[380px] mx-auto">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-accent" />
@@ -300,127 +301,7 @@ function DashboardContent() {
           </Card>
         </div>
   
-          <Card className="border-2">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-accent" />
-                Contribution Activity
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col items-start gap-3">
-                <p className="text-sm text-muted-foreground">Your activity over the last 30 days</p>
-
-                {/* Heatmap calendar: columns = weeks, rows = days (Sun-Sat) */}
-                <div className="overflow-x-auto w-full">
-                    <div className="flex items-start gap-3 py-3">
-                      {/* build weeks from contributionHeatmap and render month/day axes */}
-                      {(() => {
-                        const rawDays = contributionHeatmap || [];
-                        // focus on last 30 days
-                        const now = new Date();
-                        const thirtyAgo = new Date(now.getTime() - 29 * 24 * 60 * 60 * 1000);
-                        let days = rawDays
-                          .filter(d => new Date(d.date) >= thirtyAgo)
-                          .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-
-                        if (days.length === 0) {
-                          // generate the last 30 days with zero counts to show an empty grid
-                          const startDate = new Date(now.getTime() - 29 * 24 * 60 * 60 * 1000);
-                          const generated: { date: string; count: number }[] = [];
-                          for (let i = 0; i < 30; i++) {
-                            const d = new Date(startDate);
-                            d.setDate(startDate.getDate() + i);
-                            generated.push({ date: d.toISOString().split('T')[0], count: 0 });
-                          }
-                          days = generated;
-                        }
-
-                        const start = new Date(days[0].date);
-                        const startDay = start.getDay(); // 0 = Sun
-                        const total = days.length;
-                        const totalWeeks = Math.ceil((startDay + total) / 7);
-
-                        const weeks: ( { date: string; count: number } | null)[][] = [];
-                        for (let w = 0; w < totalWeeks; w++) {
-                          weeks[w] = new Array(7).fill(null);
-                        }
-
-                        for (let i = 0; i < total; i++) {
-                          const idx = (startDay + i) % 7;
-                          const wk = Math.floor((startDay + i) / 7);
-                          weeks[wk][idx] = days[i];
-                        }
-
-                        const maxCount = Math.max(1, ...days.map(d => d.count));
-                        const shades = ['bg-gray-100', 'bg-green-100', 'bg-green-300', 'bg-green-500', 'bg-green-700'];
-
-                        // compute month labels per week (show month when it first appears in a week)
-                        const monthLabels: (string | null)[] = new Array(totalWeeks).fill(null);
-                        let lastMonth = '';
-                        for (let w = 0; w < totalWeeks; w++) {
-                          const week = weeks[w];
-                          for (let d = 0; d < 7; d++) {
-                            const cell = week[d];
-                            if (cell) {
-                              const m = new Date(cell.date).toLocaleString(undefined, { month: 'short' });
-                              if (m !== lastMonth) {
-                                monthLabels[w] = m;
-                                lastMonth = m;
-                              }
-                              break;
-                            }
-                          }
-                        }
-
-                        return (
-                          <div className="w-full">
-                            {/* month axis */}
-                            <div className="flex items-center gap-3 mb-1">
-                              <div className="w-10 flex-shrink-0" />
-                              <div className="flex items-center gap-3">
-                                {monthLabels.map((m, i) => (
-                                  <div key={i} className="w-6 text-xs text-muted-foreground text-center">
-                                    {m || '\u00A0'}
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-
-                            <div className="flex">
-                              {/* day axis */}
-                              <div className="flex flex-col mr-2 space-y-1">
-                                {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d) => (
-                                  <div key={d} className="text-xs text-muted-foreground h-6 w-10 flex items-center justify-end pr-2">{d}</div>
-                                ))}
-                              </div>
-
-                              <div className="flex items-start gap-3">
-                                {weeks.map((week, wi) => (
-                                  <div key={wi} className="flex flex-col items-center gap-2">
-                                    {week.map((cell, di) => {
-                                      const count = cell?.count || 0;
-                                      const intensity = count > 0 ? Math.min(4, Math.ceil((count / maxCount) * 4)) : 0;
-                                      const cls = shades[intensity] || shades[0];
-                                      const title = cell ? `${cell.date}: ${cell.count} activities` : '';
-                                      return (
-                                        <div key={di} className="w-6 h-6 rounded-sm border" title={title}>
-                                          <div className={`${cls} w-6 h-6 rounded-sm`} />
-                                        </div>
-                                      );
-                                    })}
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })()}
-                    </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Contribution Activity removed per request */}
 
         <Card className="bg-gradient-to-r from-primary to-accent text-white border-0">
           <CardContent className="p-4 sm:p-6 md:p-8">
@@ -437,6 +318,18 @@ function DashboardContent() {
                 </Button>
               </Link>
             </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-2 mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-accent" />
+              Todo List
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <TodoList />
           </CardContent>
         </Card>
       </main>

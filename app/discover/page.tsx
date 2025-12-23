@@ -128,11 +128,6 @@ function DiscoverContent() {
                   View Dashboard
                 </Button>
               </Link>
-              <Link href="/progress">
-                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
-                  Track Progress
-                </Button>
-              </Link>
             </div>
           </CardContent>
         </Card>
@@ -168,11 +163,7 @@ function DiscoverContent() {
         />
       </main>
 
-      <footer className="border-t mt-12 sm:mt-16 md:mt-24 py-8 bg-white/50 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-muted-foreground">
-          <p>MoodLift - Your AI-Powered Emotional Wellness Companion</p>
-        </div>
-      </footer>
+      {/* Footer rendered by DiscoverPageWrapper via <AppFooter /> */}
     </div>
   );
 }
