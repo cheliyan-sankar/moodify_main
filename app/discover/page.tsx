@@ -33,7 +33,7 @@ function DiscoverContent() {
       </nav>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12">
-        <Card className="mb-12 overflow-hidden border-0 bg-accent/20">
+        <Card className="mb-12 overflow-hidden border-2 border-secondary/80 bg-accent/20">
           <CardContent className="p-4 sm:p-6 md:p-8">
             <div className="flex flex-col md:flex-row items-center gap-6">
               <div className="flex-1 text-center md:text-left">
@@ -113,7 +113,7 @@ function DiscoverContent() {
           <BooksSection />
         </section>
 
-        <Card className="bg-gradient-to-r from-primary to-accent text-white border-0 shadow-2xl">
+        <Card className="bg-gradient-to-r from-primary to-accent text-white border-2 border-secondary/80 shadow-2xl">
           <CardContent className="p-6 sm:p-8 md:p-12 text-center">
             <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mx-auto mb-4">
               <Heart className="w-8 h-8 text-white" />

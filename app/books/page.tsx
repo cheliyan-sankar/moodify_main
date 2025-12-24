@@ -10,6 +10,7 @@ import { AppFooter } from '@/components/app-footer';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-context';
 import { SiteHeader } from '@/components/site-header';
+import StructuredData from '@/components/structured-data';
 import {
   Select,
   SelectContent,
@@ -85,6 +86,20 @@ export default function BooksPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-secondary/20 to-accent/10">
+      <StructuredData
+        script={{
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "name": "Book Recommendations - MoodLift",
+          "description": "Discover personalized book recommendations based on your mood and emotional state for better mental health and well-being.",
+          "url": "https://moodlift.com/books",
+          "publisher": {
+            "@type": "Organization",
+            "name": "MoodLift",
+            "url": "https://moodlift.com"
+          }
+        }}
+      />
       <SiteHeader />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12">

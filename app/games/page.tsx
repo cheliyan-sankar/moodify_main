@@ -66,7 +66,7 @@ function GamesHubContent() {
           <GamesSection />
         </section>
 
-        <Card className="bg-gradient-to-r from-primary to-accent text-white border-0 shadow-2xl">
+        <Card className="bg-gradient-to-r from-primary to-accent text-white border-2 border-secondary/80 shadow-2xl">
           <CardContent className="p-6 sm:p-8 md:p-12 text-center">
             <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mx-auto mb-4">
               <Heart className="w-8 h-8 text-white" />

@@ -1,13 +1,60 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
 
 import { AppFooter } from '@/components/app-footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { SiteHeader } from '@/components/site-header';
+import StructuredData from '@/components/structured-data';
+
+export const metadata: Metadata = {
+  title: 'About MoodLift - AI-Powered Emotional Wellness Platform',
+  description: 'Learn about MoodLift, an AI-powered mental wellness platform designed to help people understand, regulate, and improve their mood through engaging activities and games.',
+  keywords: 'mood tracking, emotional wellness, mental health, AI wellness, mood improvement, mindfulness, CBT, breathing exercises',
+  openGraph: {
+    title: 'About MoodLift - AI-Powered Emotional Wellness Platform',
+    description: 'Discover how MoodLift uses AI-powered wellness games and activities to help improve emotional well-being and mental health.',
+    url: 'https://moodlift.com/about',
+    siteName: 'MoodLift',
+    images: [
+      {
+        url: 'https://moodlift.com/images/og-about.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'MoodLift - AI-Powered Emotional Wellness',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'About MoodLift - AI-Powered Emotional Wellness Platform',
+    description: 'Discover how MoodLift uses AI-powered wellness games and activities to help improve emotional well-being and mental health.',
+    images: ['https://moodlift.com/images/og-about.jpg'],
+  },
+  alternates: {
+    canonical: '/about',
+  },
+};
 
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-secondary/20 to-accent/10">
+      <StructuredData
+        script={{
+          "@context": "https://schema.org",
+          "@type": "AboutPage",
+          "name": "About MoodLift",
+          "description": "Learn about MoodLift, an AI-powered mental wellness platform designed to help people understand, regulate, and improve their mood through engaging activities and games.",
+          "url": "/about",
+          "publisher": {
+            "@type": "Organization",
+            "name": "MoodLift",
+            "url": "https://moodlift.com"
+          }
+        }}
+      />
       <SiteHeader />
 
       <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">

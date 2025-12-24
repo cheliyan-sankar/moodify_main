@@ -70,7 +70,7 @@ export default function RewardsPage() {
 
         {/* Total Points Card */}
         <div className="mb-12 animate-fade-in">
-          <Card className="border-0 bg-gradient-to-r from-primary to-secondary shadow-lg overflow-hidden">
+          <Card className="border-2 border-secondary/80 bg-gradient-to-r from-primary to-secondary shadow-lg overflow-hidden">
             <div className="p-4 sm:p-6 md:p-8 sm:p-12">
               <div className="flex items-center justify-between">
                 <div>
@@ -86,7 +86,7 @@ export default function RewardsPage() {
         {/* Current Milestone Section */}
         {currentMilestone && (
           <div className="mb-12 animate-fade-in">
-            <Card className="border-0 shadow-lg bg-white dark:bg-slate-800">
+            <Card className="border-2 border-secondary/80 shadow-lg bg-white dark:bg-slate-800">
               <div className="p-4 sm:p-6 md:p-8">
                 <div className="flex items-center gap-3 mb-6">
                   <Target className="w-6 h-6 text-primary" />
@@ -140,7 +140,7 @@ export default function RewardsPage() {
               return (
                 <Card
                   key={milestone.id}
-                  className={`border-0 transition-all duration-300 transform hover:scale-105 ${
+                  className={`border-2 border-secondary/80 transition-all duration-300 transform hover:scale-105 ${
                     isReached
                       ? 'bg-gradient-to-br from-primary to-secondary shadow-lg'
                       : 'bg-slate-100 dark:bg-slate-800 opacity-50'
@@ -183,7 +183,7 @@ export default function RewardsPage() {
               return (
                 <Card
                   key={badge.id}
-                  className={`border-0 transition-all duration-300 overflow-hidden group hover:shadow-lg transform ${
+                  className={`border-2 border-secondary/80 transition-all duration-300 overflow-hidden group hover:shadow-lg transform ${
                     isEarned ? 'bg-white dark:bg-slate-800' : 'bg-slate-100 dark:bg-slate-800 opacity-60'
                   }`}
                 >

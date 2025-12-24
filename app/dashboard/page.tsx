@@ -210,7 +210,7 @@ function DashboardContent() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-3 sm:gap-4 md:gap-6 mb-8 sm:mb-12">
-          <Card className="border-0 bg-white rounded-[24px]" style={{ boxShadow: '0 8px 24px rgba(67,38,122,0.08)' }}>
+          <Card className="border-2 border-secondary/80 bg-white rounded-[24px]" style={{ boxShadow: '0 8px 24px rgba(67,38,122,0.08)' }}>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Calendar className="w-5 h-5 text-accent" />
@@ -303,7 +303,7 @@ function DashboardContent() {
   
           {/* Contribution Activity removed per request */}
 
-        <Card className="bg-gradient-to-r from-primary to-accent text-white border-0">
+        <Card className="bg-gradient-to-r from-primary to-accent text-white border-2 border-secondary/80">
           <CardContent className="p-4 sm:p-6 md:p-8">
             <div className="flex items-center justify-between">
               <div>

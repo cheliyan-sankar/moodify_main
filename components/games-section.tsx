@@ -269,7 +269,7 @@ export function GamesSection() {
           return (
             <Card
               key={game.id}
-              className="group relative w-full max-w-[420px] aspect-square rounded-[24px] bg-white border-0 shadow-[0_8px_16px_rgba(75,52,37,0.05)] overflow-hidden animate-in fade-in-50 slide-in-from-bottom-4 cursor-pointer"
+              className="group relative w-full max-w-[420px] aspect-square rounded-[24px] bg-white border-2 border-secondary/80 shadow-[0_8px_16px_rgba(75,52,37,0.05)] overflow-hidden animate-in fade-in-50 slide-in-from-bottom-4 cursor-pointer"
               style={{ animationDelay: `${index * 100}ms` }}
               onClick={() => handleCardClick(game)}
             >

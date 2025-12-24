@@ -199,10 +199,35 @@ export default function Home() {
       <StructuredData
         script={{
           "@context": "https://schema.org",
-          "@type": "WebPage",
-          "name": "MoodLift - Home",
-          "url": "https://your-production-url.example.com/",
-          "description": "AI-powered wellness games to improve emotional well-being",
+          "url": "/",
+          "publisher": {
+            "url": "/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://moodlift.com/images/logo.png"
+            }
+          },
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "/search?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        }}
+      />
+      <StructuredData
+        script={{
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": "MoodLift",
+          "url": "https://moodlift.com",
+          "description": "AI-powered emotional wellness platform helping people improve mental health through interactive games and activities.",
+          "foundingDate": "2024",
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "+91-89405-06900",
+            "contactType": "customer service",
+            "email": "support@moodlift.com"
+          }
         }}
       />
       {/* FAQ structured data (sampleed from site FAQs) */}
@@ -466,7 +491,7 @@ export default function Home() {
 
                 return (
                   <Link key={g.id} href={`/games/${slug}`} className="md:col-span-1">
-                    <div className="text-card-foreground group relative w-full max-w-[420px] aspect-square rounded-[24px] bg-white border-0 shadow-[0_8px_16px_rgba(75,52,37,0.05)] overflow-hidden animate-in fade-in-50 slide-in-from-bottom-4 cursor-pointer perspective-1000 hover:transform hover:rotate-x-6 hover:rotate-y-6 hover:scale-105 transition-all duration-300">
+                    <div className="text-card-foreground group relative w-full max-w-[420px] aspect-square rounded-[24px] bg-white border-2 border-secondary/80 shadow-[0_8px_16px_rgba(75,52,37,0.05)] overflow-hidden animate-in fade-in-50 slide-in-from-bottom-4 cursor-pointer perspective-1000 hover:transform hover:rotate-x-6 hover:rotate-y-6 hover:scale-105 transition-all duration-300">
                       <div className="flex h-full flex-col p-4 sm:p-5">
                         <div className="relative h-[46%] w-full overflow-hidden rounded-[24px] bg-[#D9D9D9]">
                           {g.cover_image_url ? (
@@ -494,7 +519,7 @@ export default function Home() {
               // fallback static content if no popular games set
               <>
                 <Link href="/games/box-breathing" className="md:col-span-1">
-                  <div className="text-card-foreground group relative w-full max-w-[420px] aspect-square rounded-[24px] bg-white border-0 shadow-[0_8px_16px_rgba(75,52,37,0.05)] overflow-hidden animate-in fade-in-50 slide-in-from-bottom-4 cursor-pointer perspective-1000 hover:transform hover:rotate-x-6 hover:rotate-y-6 hover:scale-105 transition-all duration-300">
+                  <div className="text-card-foreground group relative w-full max-w-[420px] aspect-square rounded-[24px] bg-white border-2 border-secondary/80 shadow-[0_8px_16px_rgba(75,52,37,0.05)] overflow-hidden animate-in fade-in-50 slide-in-from-bottom-4 cursor-pointer perspective-1000 hover:transform hover:rotate-x-6 hover:rotate-y-6 hover:scale-105 transition-all duration-300">
                     <div className="flex h-full flex-col p-4 sm:p-5">
                       <div className="relative h-[46%] w-full overflow-hidden rounded-[24px] bg-[#D9D9D9]">
                         <div className="h-full w-full relative bg-gray-100 flex items-center justify-center">
@@ -514,7 +539,7 @@ export default function Home() {
                 </Link>
 
                 <Link href="/games/diaphragmatic-breathing" className="md:col-span-1">
-                  <div className="text-card-foreground group relative w-full max-w-[420px] aspect-square rounded-[24px] bg-white border-0 shadow-[0_8px_16px_rgba(75,52,37,0.05)] overflow-hidden animate-in fade-in-50 slide-in-from-bottom-4 cursor-pointer perspective-1000 hover:transform hover:rotate-x-6 hover:rotate-y-6 hover:scale-105 transition-all duration-300">
+                  <div className="text-card-foreground group relative w-full max-w-[420px] aspect-square rounded-[24px] bg-white border-2 border-secondary/80 shadow-[0_8px_16px_rgba(75,52,37,0.05)] overflow-hidden animate-in fade-in-50 slide-in-from-bottom-4 cursor-pointer perspective-1000 hover:transform hover:rotate-x-6 hover:rotate-y-6 hover:scale-105 transition-all duration-300">
                     <div className="flex h-full flex-col p-4 sm:p-5">
                       <div className="relative h-[46%] w-full overflow-hidden rounded-[24px] bg-[#D9D9D9]">
                         <img src="https://vsarsdunppymyunnjmqk.supabase.co/storage/v1/object/public/assets/1766410867830-download (3).jfif" alt="Diaphragmatic Breathing" className="absolute inset-0 w-full h-full object-cover" />
@@ -532,7 +557,7 @@ export default function Home() {
                 </Link>
 
                 <Link href="/games/four-seven-eight-breathing" className="md:col-span-1">
-                  <div className="text-card-foreground group relative w-full max-w-[420px] aspect-square rounded-[24px] bg-white border-0 shadow-[0_8px_16px_rgba(75,52,37,0.05)] overflow-hidden animate-in fade-in-50 slide-in-from-bottom-4 cursor-pointer perspective-1000 hover:transform hover:rotate-x-6 hover:rotate-y-6 hover:scale-105 transition-all duration-300">
+                  <div className="text-card-foreground group relative w-full max-w-[420px] aspect-square rounded-[24px] bg-white border-2 border-secondary/80 shadow-[0_8px_16px_rgba(75,52,37,0.05)] overflow-hidden animate-in fade-in-50 slide-in-from-bottom-4 cursor-pointer perspective-1000 hover:transform hover:rotate-x-6 hover:rotate-y-6 hover:scale-105 transition-all duration-300">
                     <div className="flex h-full flex-col p-4 sm:p-5">
                       <div className="relative h-[46%] w-full overflow-hidden rounded-[24px] bg-[#D9D9D9]">
                         <div className="h-full w-full relative bg-gray-100 flex items-center justify-center">
@@ -555,7 +580,7 @@ export default function Home() {
           </div>
         </div>
 
-        <Card className="mb-12 overflow-hidden rounded-[24px] border-2 border-secondary/60 bg-secondary/15">
+        <Card className="mb-12 overflow-hidden rounded-[24px] border-2 border-secondary/80 bg-secondary/15">
           <CardContent className="p-4 sm:p-5 md:p-7">
             <div className="flex flex-col md:flex-row md:items-center gap-5">
               <div className="flex items-start gap-5 flex-1">

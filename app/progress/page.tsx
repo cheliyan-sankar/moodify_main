@@ -218,7 +218,7 @@ function ProgressContent() {
 
         {/* Todo List moved to Dashboard page */}
 
-        <Card className="bg-gradient-to-r from-primary to-accent text-white border-0">
+        <Card className="bg-gradient-to-r from-primary to-accent text-white border-2 border-secondary/80">
           <CardContent className="p-4 sm:p-6 md:p-8 text-center">
             <Target className="w-16 h-16 mx-auto mb-4" />
             <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-2">Keep Going!</h3>

@@ -1,13 +1,60 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
 
 import { AppFooter } from '@/components/app-footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { SiteHeader } from '@/components/site-header';
+import StructuredData from '@/components/structured-data';
+
+export const metadata: Metadata = {
+  title: 'Privacy Policy - MoodLift Emotional Wellness Platform',
+  description: 'Read MoodLift\'s privacy policy to understand how we collect, use, and protect your personal information and data privacy practices.',
+  keywords: 'privacy policy, data protection, personal information, privacy practices, data security, GDPR compliance',
+  openGraph: {
+    title: 'Privacy Policy - MoodLift Emotional Wellness Platform',
+    description: 'Read MoodLift\'s privacy policy to understand how we collect, use, and protect your personal information and data privacy practices.',
+    url: 'https://moodlift.com/privacy-policy',
+    siteName: 'MoodLift',
+    images: [
+      {
+        url: 'https://moodlift.com/images/og-privacy.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'MoodLift Privacy Policy - Data Protection & Privacy',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Privacy Policy - MoodLift Emotional Wellness Platform',
+    description: 'Read MoodLift\'s privacy policy to understand how we collect, use, and protect your personal information and data privacy practices.',
+    images: ['https://moodlift.com/images/og-privacy.jpg'],
+  },
+  alternates: {
+    canonical: '/privacy-policy',
+  },
+};
 
 export default function PrivacyPolicyPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-secondary/20 to-accent/10">
+      <StructuredData
+        script={{
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "name": "Privacy Policy - MoodLift",
+          "description": "MoodLift's privacy policy explaining data collection, usage, and protection practices.",
+          "url": "/privacy-policy",
+          "publisher": {
+            "@type": "Organization",
+            "name": "MoodLift",
+            "url": "https://moodlift.com"
+          }
+        }}
+      />
       <SiteHeader />
 
       <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
