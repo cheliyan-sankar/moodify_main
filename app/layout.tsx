@@ -85,10 +85,8 @@ export async function generateMetadata({ request }: { request: Request }): Promi
         siteName: defaultMetadata.openGraph?.siteName,
         images: ogImages as any,
         locale: defaultMetadata.openGraph?.locale,
-        type: defaultMetadata.openGraph?.type,
       },
       twitter: {
-        card: seo.twitter_card || defaultMetadata.twitter?.card,
         title: seo.title || defaultMetadata.twitter?.title,
         description: seo.description || defaultMetadata.twitter?.description,
         images: seo.og_image ? [seo.og_image] : defaultMetadata.twitter?.images,
