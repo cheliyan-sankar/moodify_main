@@ -107,6 +107,13 @@ const gameDetailsMap: Readonly<{ [key: string]: GameDetails }> = {
     howItHelps: 'Externalize your worries by placing them somewhere safe—outside your mind. This CBT-based technique helps your brain interpret the worry as "stored and contained," reducing its emotional intensity. When worries feel infinite in your head, simply writing them down and placing them away creates essential psychological distance.',
     gameUrl: '/games/worry-box'
   }
+  ,
+  'Cognitive Grounding': {
+    moodBenefits: ['Interrupts Anxiety', 'Sharpens Focus', 'Grounds in Present'],
+    duration: '5-10 minutes',
+    howItHelps: 'Engage your mind with focused mental exercises like counting, naming, and sensory grounding to shift attention away from worry and anchor you in the present.',
+    gameUrl: '/games/cognitive-grounding'
+  }
 };
 
 function GameCover({ src, title, wrapperClass = '', imgClass = '', action }: { src?: string; title?: string; wrapperClass?: string; imgClass?: string; action?: React.ReactNode }) {
