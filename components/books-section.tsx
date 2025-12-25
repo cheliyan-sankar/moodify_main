@@ -76,7 +76,7 @@ export function BooksSection() {
           if (src && !failed) {
             return (
               <div className={baseWrapper}>
-                <img src={src} alt={title} className={imgClass} onError={() => setFailed(true)} />
+                <img src={src} alt={title} title={title} className={imgClass} onError={() => setFailed(true)} />
                 {action}
               </div>
             );

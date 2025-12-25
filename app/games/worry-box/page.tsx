@@ -607,9 +607,10 @@ export default function WorryBox() {
           {/* GIF Display Screen */}
           {step === 'gifDisplay' && (
             <div className="text-center space-y-6 animate-in fade-in-50">
-              <img 
+              <img
                 src="/gifs/like-that.gif"
                 alt="Like that - lets go"
+                title="Like that - lets go"
                 className="rounded-2xl shadow-lg mx-auto"
                 style={{ width: '150px', height: '150px' }}
               />

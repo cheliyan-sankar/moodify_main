@@ -499,7 +499,7 @@ export default function Home() {
                         <div className="flex h-full flex-col p-4 sm:p-5">
                           <div className="relative h-[46%] w-full overflow-hidden rounded-[24px] bg-[#D9D9D9]">
                             {g.cover_image_url ? (
-                              <img src={g.cover_image_url} alt={g.title} className="absolute inset-0 w-full h-full object-cover" />
+                              <img src={g.cover_image_url} alt={g.title} title={g.title} className="absolute inset-0 w-full h-full object-cover" />
                             ) : (
                               <div className="h-full w-full relative bg-gray-100 flex items-center justify-center">
                                 <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-600">{g.title.charAt(0).toUpperCase()}</div>
@@ -551,7 +551,7 @@ export default function Home() {
                       <div className="flex h-full flex-col p-4 sm:p-5">
                         <div className="relative h-[46%] w-full overflow-hidden rounded-[24px] bg-[#D9D9D9]">
                           {g.cover_image_url ? (
-                            <img src={g.cover_image_url} alt={g.title} className="absolute inset-0 w-full h-full object-cover" />
+                              <img src={g.cover_image_url} alt={g.title} title={g.title} className="absolute inset-0 w-full h-full object-cover" />
                           ) : (
                             <div className="h-full w-full relative bg-gray-100 flex items-center justify-center">
                               <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-600">{g.title.charAt(0).toUpperCase()}</div>
@@ -598,7 +598,7 @@ export default function Home() {
                   <div className="text-card-foreground group relative w-full max-w-[420px] aspect-square rounded-[24px] bg-white border-2 border-secondary/80 shadow-[0_8px_16px_rgba(75,52,37,0.05)] overflow-hidden animate-in fade-in-50 slide-in-from-bottom-4 cursor-pointer perspective-1000 hover:transform hover:rotate-x-6 hover:rotate-y-6 hover:scale-105 transition-all duration-300">
                     <div className="flex h-full flex-col p-4 sm:p-5">
                       <div className="relative h-[46%] w-full overflow-hidden rounded-[24px] bg-[#D9D9D9]">
-                        <img src="https://vsarsdunppymyunnjmqk.supabase.co/storage/v1/object/public/assets/1766410867830-download (3).jfif" alt="Diaphragmatic Breathing" className="absolute inset-0 w-full h-full object-cover" />
+                        <img src="https://vsarsdunppymyunnjmqk.supabase.co/storage/v1/object/public/assets/1766410867830-download (3).jfif" alt="Diaphragmatic Breathing" title="Diaphragmatic Breathing" className="absolute inset-0 w-full h-full object-cover" />
                       </div>
                       <div className="mt-[11px]">
                         <h3 className="line-clamp-2 text-[18px] sm:text-[20px] md:text-[22px] font-semibold leading-[1.2] text-primary">Diaphragmatic Breathing</h3>

@@ -1,5 +1,6 @@
 import './globals.css';
 import type { Metadata } from 'next';
+import { getSeoMetadata } from '@/lib/seo-service';
 import { Inter } from 'next/font/google';
 import { AuthProvider } from '@/lib/auth-context';
 import { FavoritesProvider } from '@/lib/favorites-context';
@@ -61,6 +62,43 @@ export const metadata: Metadata = {
     google: 'your-google-site-verification-code',
   },
 };
+
+export async function generateMetadata({ request }: { request: Request }): Promise<Metadata> {
+  try {
+    const url = new URL(request.url);
+    const pathname = url.pathname || '/';
+    const seo = await getSeoMetadata(pathname);
+    if (!seo) return metadata;
+
+    const ogImages = seo.og_image ? [{ url: seo.og_image, alt: seo.title }] : metadata.openGraph?.images;
+
+    return {
+      title: seo.title || metadata.title,
+      description: seo.description || metadata.description,
+      keywords: seo.keywords || metadata.keywords,
+      metadataBase: metadata.metadataBase,
+      alternates: metadata.alternates,
+      openGraph: {
+        title: seo.title || metadata.openGraph?.title,
+        description: seo.description || metadata.openGraph?.description,
+        url: `${metadata.metadataBase?.toString()?.replace(/\/$/, '')}${pathname}`,
+        siteName: metadata.openGraph?.siteName,
+        images: ogImages as any,
+        locale: metadata.openGraph?.locale,
+        type: metadata.openGraph?.type,
+      },
+      twitter: {
+        card: seo.twitter_card || metadata.twitter?.card,
+        title: seo.title || metadata.twitter?.title,
+        description: seo.description || metadata.twitter?.description,
+        images: seo.og_image ? [seo.og_image] : metadata.twitter?.images,
+      },
+    } as Metadata;
+  } catch (err) {
+    console.error('Error generating metadata:', err);
+    return metadata;
+  }
+}
 
 export default function RootLayout({
   children,

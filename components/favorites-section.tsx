@@ -169,7 +169,7 @@ export function FavoritesSection() {
           if (src && !failed) {
             return (
               <div className={wrapperClass}>
-                <img src={src} alt={title} className={imgClass} onError={() => setFailed(true)} />
+                <img src={src} alt={title} title={title} className={imgClass} onError={() => setFailed(true)} />
               </div>
             );
           }

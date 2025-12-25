@@ -792,7 +792,7 @@ export default function PsychometricAssessment() {
                           <div key={c.id} className="flex items-center justify-between gap-4">
                             <div className="flex items-center gap-4 min-w-0">
                               {c.picture_url ? (
-                                <img src={c.picture_url} alt={c.full_name || 'Consultant'} className="w-[6.25rem] h-[6.25rem] object-cover rounded-md flex-shrink-0" />
+                                <img src={c.picture_url} alt={c.full_name || 'Consultant'} title={c.full_name || 'Consultant'} className="w-[6.25rem] h-[6.25rem] object-cover rounded-md flex-shrink-0" />
                               ) : (
                                 <div className="w-[6.25rem] h-[6.25rem] bg-[#E2DAF5] rounded-md flex items-center justify-center text-lg text-[#3C1F71] flex-shrink-0">
                                   {c.full_name ? c.full_name.charAt(0).toUpperCase() : '?'}
