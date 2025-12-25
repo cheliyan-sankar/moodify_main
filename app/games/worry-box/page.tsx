@@ -319,10 +319,10 @@ export default function WorryBox() {
               {/* Header Section */}
               <div className="text-center space-y-4 pt-4">
                 <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900">
-                  Welcome to Worry Box
+                  Worry Box
                 </h1>
                 <p className="text-base sm:text-lg text-gray-700 max-w-md mx-auto leading-relaxed">
-                  A CBT-guided activity to externalize, sort, and release overwhelming thoughts safely.
+                  A <strong>(Cognitive Behavioral Therapy) CBT-based technique</strong> to externalize worries and reduce mental overload
                 </p>
 
                 <div className="flex justify-center py-6">

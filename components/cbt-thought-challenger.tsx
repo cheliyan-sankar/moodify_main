@@ -65,7 +65,7 @@ export function CBTThoughtChallenger() {
       <div className="text-center space-y-2">
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900">CBT Thought-Challenger</h1>
         <p className="text-gray-600">
-          Challenge unhelpful thinking patterns using Cognitive Behavioral Therapy techniques.
+          Challenge unhelpful thinking patterns using <strong>Cognitive Behavioral Therapy</strong> techniques.
         </p>
       </div>
 

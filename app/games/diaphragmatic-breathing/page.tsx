@@ -258,7 +258,7 @@ export default function DiaphragmaticBreathing() {
           <div className="text-center">
             <h1 className="text-2xl sm:text-3xl font-bold text-blue-600 mb-2">Diaphragmatic Breathing</h1>
             <p className="text-xs sm:text-sm text-gray-600 max-w-2xl mx-auto">
-              A <span className="font-bold">Cognitive Behavioral Therapy (CBT)</span>–supported <span className="font-bold">method</span> to slow breathing, reduce anxiety, and restore calm.
+              A <span className="font-bold">Cognitive Behavioral Therapy (CBT)</span>–supported method to slow breathing, reduce anxiety, and restore calm.
             </p>
           </div>
         </div>

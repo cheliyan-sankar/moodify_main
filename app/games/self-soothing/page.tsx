@@ -181,7 +181,7 @@ export default function SelfSoothing() {
           </Button>
           <div className="text-center">
             <h1 className="text-2xl sm:text-3xl font-bold text-purple-700 mb-1">Self-Soothing</h1>
-            <p className="text-xs sm:text-sm text-slate-600">A sensory comfort experience</p>
+            <p className="text-xs sm:text-sm text-slate-600">A <strong>(Dialectical Behavior Therapy)DBT</strong> self-soothing skill that uses the senses to manage emotional distress.</p>
           </div>
         </div>
       </nav>
