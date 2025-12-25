@@ -28,15 +28,12 @@ export async function GET(request: NextRequest) {
     if (pageUrl) {
       query = query.eq('page_url', pageUrl);
     } else if (gameId) {
-      console.log('Fetching SEO for gameId:', gameId);
       query = query.eq('game_id', gameId);
     } else {
       query = query.order('page_url', { ascending: true });
     }
 
     const { data, error } = await query;
-
-    console.log('SEO query result:', { data, error });
 
     if (error) {
       // If error is about game_id column not existing, return empty result

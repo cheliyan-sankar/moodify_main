@@ -119,11 +119,8 @@ export async function POST(request: NextRequest) {
         updated_at: new Date().toISOString(),
       };
 
-      console.log('SEO data to save:', seoData);
-      console.log('Game ID:', gameId);
-
       // Try to use game_id if column exists, otherwise use page_url
-      let upsertData = seoData;
+      let upsertData: any = seoData;
       let onConflictKey = 'page_url';
       try {
         // Check if game_id column exists by trying to select it
@@ -144,8 +141,6 @@ export async function POST(request: NextRequest) {
       if (seoError) {
         console.error('Failed to save SEO metadata:', seoError);
         // Don't fail the whole request for SEO errors
-      } else {
-        console.log('SEO metadata saved successfully with data:', upsertData);
       }
 
       // Re-fetch to ensure persisted fields (cover_image_url, is_popular, etc.)
