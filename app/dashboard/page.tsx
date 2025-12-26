@@ -147,6 +147,12 @@ function DashboardContent() {
       <HomeNavbar />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12">
+        <div className="flex items-center justify-start mb-4">
+          <Button asChild variant="outline" size="sm">
+            <Link href="/">Back to home</Link>
+          </Button>
+        </div>
+
         <div className="mb-8">
           <h2 className="section-title font-bold text-primary mb-2">Welcome back!</h2>
           <p className="text-muted-foreground">Here's your emotional wellness journey at a glance</p>

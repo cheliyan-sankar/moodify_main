@@ -368,6 +368,36 @@ export default function Home() {
 
         <QuoteCarousel />
 
+        <Card className="mb-12 overflow-hidden rounded-[24px] border-2 border-secondary/80 bg-secondary/15">
+          <CardContent className="p-4 sm:p-5 md:p-7">
+            <div className="flex flex-col md:flex-row md:items-center gap-5">
+              <div className="flex items-start gap-5 flex-1">
+                <div className="shrink-0 w-[72px] h-[72px] rounded-[20px] bg-primary flex items-center justify-center">
+                  <ClipboardList className="w-8 h-8 text-white" aria-hidden />
+                </div>
+
+                <div className="min-w-0">
+                  <h2 className="section-title font-bold text-primary leading-tight">
+                    Confused About Your Mental State?
+                  </h2>
+                  <p className="mt-2 text-sm sm:text-base text-muted-foreground leading-relaxed">
+                    Take a short <span className="font-semibold">Scientifically</span> validated assessment to get clarity on your mood, stress, or anxiety.
+                  </p>
+                </div>
+              </div>
+
+              <div className="w-full md:w-auto md:ml-auto">
+                <Button
+                  className="w-full md:w-auto h-10 sm:h-12 rounded-full px-8 bg-primary hover:bg-primary/90 text-sm sm:text-base font-semibold"
+                  onClick={handleAssessmentClick}
+                >
+                  Start Assessment
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Most Popular Activity Session */}
         <div className="mb-8">
           <div className="text-center mb-8">
@@ -477,36 +507,6 @@ export default function Home() {
             )}
           </div>
         </div>
-
-        <Card className="mb-12 overflow-hidden rounded-[24px] border-2 border-secondary/80 bg-secondary/15">
-          <CardContent className="p-4 sm:p-5 md:p-7">
-            <div className="flex flex-col md:flex-row md:items-center gap-5">
-              <div className="flex items-start gap-5 flex-1">
-                <div className="shrink-0 w-[72px] h-[72px] rounded-[20px] bg-primary flex items-center justify-center">
-                  <ClipboardList className="w-8 h-8 text-white" aria-hidden />
-                </div>
-
-                <div className="min-w-0">
-                  <h2 className="section-title font-bold text-primary leading-tight">
-                    Confused About Your Mental State?
-                  </h2>
-                  <p className="mt-2 text-sm sm:text-base text-muted-foreground leading-relaxed">
-                    Take a short <span className="font-semibold">Scientifically</span> validated assessment to get clarity on your mood, stress, or anxiety.
-                  </p>
-                </div>
-              </div>
-
-              <div className="w-full md:w-auto md:ml-auto">
-                <Button
-                  className="w-full md:w-auto h-10 sm:h-12 rounded-full px-8 bg-primary hover:bg-primary/90 text-sm sm:text-base font-semibold"
-                  onClick={handleAssessmentClick}
-                >
-                  Start Assessment
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
 
         <ConsultantCarousel />
 

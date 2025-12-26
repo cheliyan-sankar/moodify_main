@@ -37,6 +37,12 @@ function GamesHubContent() {
       <HomeNavbar />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12">
+        <div className="flex items-center justify-start mb-4">
+          <Button asChild variant="outline" size="sm">
+            <Link href="/">Back to home</Link>
+          </Button>
+        </div>
+
         <section className="mb-8 sm:mb-12 md:mb-16">
           <div className="flex items-center gap-3 mb-8">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">

@@ -469,6 +469,12 @@ export default function PsychometricAssessment() {
       <HomeNavbar />
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12">
+        <div className="flex items-center justify-start mb-4">
+          <Button asChild variant="outline" size="sm">
+            <Link href="/">Back to home</Link>
+          </Button>
+        </div>
+
         {!selectedTest && (
           <>
             <Card className="mb-8 border-2 border-[#3C1F71]/20">
