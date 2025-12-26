@@ -12,6 +12,7 @@ import { AppFooter } from '@/components/app-footer';
 import { FAQSection } from '@/components/faq-section';
 import { useAuth } from '@/lib/auth-context';
 import { getGameRecommendations, type MoodType } from '@/lib/mood-service';
+import { HomeNavbar } from '@/components/home-navbar';
 
 type TestType = 'panas' | 'phq9' | 'gad7' | null;
 
@@ -464,32 +465,7 @@ export default function PsychometricAssessment() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#E2DAF5] via-white to-[#E2DAF5]">
-      <nav className="border-b bg-white/80 backdrop-blur-sm">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-4">
-              {selectedTest ? (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setSelectedTest(null)}
-                  className="bg-[#E2DAF5] hover:bg-[#3C1F71] text-[#3C1F71] hover:text-white transition-colors px-4 py-2 rounded-lg font-medium"
-                >
-                  Back
-                </Button>
-              ) : (
-                <Link href="/" title="Go back to MoodLift home page">
-                  <Button variant="ghost" size="sm" className="bg-[#E2DAF5] hover:bg-[#3C1F71] text-[#3C1F71] hover:text-white transition-colors px-4 py-2 rounded-lg font-medium">
-                    Back
-                  </Button>
-                </Link>
-              )}
-            </div>
-            <h1 className="text-xl font-bold text-[#3C1F71]">Mood Assessment</h1>
-            <div className="w-20"></div>
-          </div>
-        </div>
-      </nav>
+      <HomeNavbar />
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12">
         {!selectedTest && (
