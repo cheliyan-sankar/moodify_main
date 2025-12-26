@@ -5,7 +5,7 @@ import { getSeoMetadata } from '@/lib/seo-service';
 import { AppFooter } from '@/components/app-footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { SiteHeader } from '@/components/site-header';
+import { HomeNavbar } from '@/components/home-navbar';
 import StructuredData from '@/components/structured-data';
 
 export const dynamic = 'force-dynamic';
@@ -104,7 +104,7 @@ export default function ContactPage() {
           }
         }}
       />
-      <SiteHeader />
+      <HomeNavbar />
 
       <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <Card className="border-2 border-accent/30 bg-white/80 backdrop-blur-sm">
