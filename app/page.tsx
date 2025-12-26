@@ -259,7 +259,7 @@ export default function Home() {
             <br />
             One Game at a Time
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-base sm:text-xl text-muted-foreground max-w-2xl mx-auto">
             Mental wellness platform designed to help people understand, regulate, and improve their mood through simple, engaging activities.
           </p>
         </div>

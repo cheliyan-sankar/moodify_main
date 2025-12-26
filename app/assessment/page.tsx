@@ -773,15 +773,6 @@ export default function PsychometricAssessment() {
                 </div>
               </CardContent>
             </Card>
-
-            {!needsImmediateHelp ? (
-              <Card className="mb-8 border-2 border-[#3C1F71]/20">
-                <CardContent className="pt-6">
-                  <ConsultantCarousel compact />
-                </CardContent>
-              </Card>
-            ) : null}
-
             <div className="grid grid-cols-1 gap-4">
               <Card className="border-2 border-[#3C1F71]/20 hover:border-[#3C1F71] transition-colors">
                 <CardContent className="p-8">
@@ -813,6 +804,14 @@ export default function PsychometricAssessment() {
                   </ol>
                 </CardContent>
               </Card>
+
+              {!needsImmediateHelp ? (
+                <Card className="border-2 border-[#3C1F71]/20">
+                  <CardContent className="pt-6">
+                    <ConsultantCarousel compact />
+                  </CardContent>
+                </Card>
+              ) : null}
 
               <Card className="border-2 border-[#3C1F71]/20 hover:border-[#3C1F71] transition-colors">
                 <CardContent className="p-6">
