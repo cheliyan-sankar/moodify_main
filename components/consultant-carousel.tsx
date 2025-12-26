@@ -13,7 +13,11 @@ type Consultant = {
   booking_url?: string;
 };
 
-export default function ConsultantCarousel() {
+type ConsultantCarouselProps = {
+  compact?: boolean;
+};
+
+export default function ConsultantCarousel({ compact = false }: ConsultantCarouselProps) {
   const [consultants, setConsultants] = useState<Consultant[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -51,7 +55,7 @@ export default function ConsultantCarousel() {
           ) : null}
         </div>
 
-        <div className="mt-2">
+        <div className={compact ? 'mt-3 flex justify-center' : 'mt-2'}>
           <div className="inline-flex max-w-full rounded-full bg-primary/10 px-3 py-1">
             <span className="truncate text-xs sm:text-sm font-semibold uppercase tracking-widest text-primary">
               {name}
@@ -59,20 +63,30 @@ export default function ConsultantCarousel() {
           </div>
         </div>
 
-        <div className="mt-2 flex items-center justify-between gap-3">
-          <div className="flex min-w-0 items-center gap-2">
-            <Heart className="h-4 w-4 text-destructive" fill="currentColor" />
-            <span className="truncate text-xs sm:text-sm font-semibold uppercase tracking-widest text-primary">
-              {title}
-            </span>
+        {compact ? (
+          <div className="mt-3 flex justify-center">
+            <Action>
+              <Button className="rounded-full px-4 py-2 text-xs sm:text-sm font-semibold uppercase tracking-widest">
+                Consult Now
+              </Button>
+            </Action>
           </div>
+        ) : (
+          <div className="mt-2 flex items-center justify-between gap-3">
+            <div className="flex min-w-0 items-center gap-2">
+              <Heart className="h-4 w-4 text-destructive" fill="currentColor" />
+              <span className="truncate text-xs sm:text-sm font-semibold uppercase tracking-widest text-primary">
+                {title}
+              </span>
+            </div>
 
-          <Action>
-            <Button className="rounded-full px-3 py-2 text-xs sm:text-sm font-semibold uppercase tracking-widest">
-              Consult Now
-            </Button>
-          </Action>
-        </div>
+            <Action>
+              <Button className="rounded-full px-3 py-2 text-xs sm:text-sm font-semibold uppercase tracking-widest">
+                Consult Now
+              </Button>
+            </Action>
+          </div>
+        )}
       </div>
     );
   };
@@ -249,10 +263,22 @@ export default function ConsultantCarousel() {
 
   const Section = ({ children }: { children: React.ReactNode }) => (
     <div className="mb-6">
-      <h2 className="section-title font-semibold text-primary mb-4 text-center">
+      <h2
+        className={
+          compact
+            ? 'font-semibold text-primary mb-3 text-center text-lg sm:text-xl'
+            : 'section-title font-semibold text-primary mb-4 text-center'
+        }
+      >
         Need Professional Support?
       </h2>
-      <p className="text-lg text-muted-foreground max-w-2xl mx-auto text-center mb-4">
+      <p
+        className={
+          compact
+            ? 'text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto text-center mb-3'
+            : 'text-lg text-muted-foreground max-w-2xl mx-auto text-center mb-4'
+        }
+      >
         Connect with <span className="font-semibold">CERTIFIED Mental Health Counsellors</span> from Hexpertify.
       </p>
       {children}

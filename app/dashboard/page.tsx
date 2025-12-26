@@ -226,7 +226,8 @@ function DashboardContent() {
                     const date = new Date(activity.created_at);
                     const today = new Date();
                     const isToday = date.toDateString() === today.toDateString();
-                    const dateStr = isToday ? 'Today' : date.toLocaleDateString();
+                    const timeStr = date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+                    const dateStr = isToday ? `Today • ${timeStr}` : `${date.toLocaleDateString()} • ${timeStr}`;
 
                     const activityLabels: { [key: string]: string } = {
                       'daily_login': 'Daily Login',
@@ -235,14 +236,15 @@ function DashboardContent() {
                       'content_engagement': 'Content Engagement'
                     };
 
+                    const activityTitle = activity.description?.trim()
+                      ? activity.description.trim()
+                      : (activityLabels[activity.activity_type] || 'Activity');
+
                     return (
                       <div key={activity.id} className="flex items-center justify-between p-3 bg-secondary/30 rounded-lg">
                         <div>
-                          <p className="font-medium text-primary">{activityLabels[activity.activity_type]}</p>
+                          <p className="font-medium text-primary">{activityTitle}</p>
                           <p className="text-sm text-muted-foreground">{dateStr}</p>
-                        </div>
-                        <div className="bg-blue-100 px-3 py-1 rounded-full text-sm font-medium text-blue-700">
-                          +{activity.points_earned} pts
                         </div>
                       </div>
                     );

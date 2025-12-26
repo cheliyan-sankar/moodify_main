@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Brain, ArrowLeft, CheckCircle2, Sparkles, TrendingUp, Loader2, Heart, Activity, Gamepad2, Info } from 'lucide-react';
+import { Brain, ArrowLeft, CheckCircle2, Sparkles, TrendingUp, Loader2, Heart, Activity, Gamepad2, Info, AlertTriangle } from 'lucide-react';
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import Link from 'next/link';
@@ -13,6 +13,7 @@ import { FAQSection } from '@/components/faq-section';
 import { useAuth } from '@/lib/auth-context';
 import { getGameRecommendations, type MoodType } from '@/lib/mood-service';
 import { HomeNavbar } from '@/components/home-navbar';
+import ConsultantCarousel from '@/components/consultant-carousel';
 import { DEFAULT_FAQS } from '@/lib/default-faqs';
 
 type TestType = 'panas' | 'phq9' | 'gad7' | null;
@@ -464,6 +465,12 @@ export default function PsychometricAssessment() {
     return consultantsList.filter(c => !!c.full_name && c.full_name.trim()).slice(0, 3);
   }, [consultantsList]);
 
+  const needsImmediateHelp = !!(
+    result &&
+    ((selectedTest === 'phq9' && result.totalScore >= 15) ||
+      (selectedTest === 'gad7' && result.totalScore >= 15))
+  );
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#E2DAF5] via-white to-[#E2DAF5]">
       <HomeNavbar />
@@ -750,6 +757,19 @@ export default function PsychometricAssessment() {
                 </div>
               </CardContent>
             </Card>
+            {needsImmediateHelp ? (
+              <Card className="mb-8 border-2 border-red-200">
+                <CardHeader className="bg-red-50">
+                  <CardTitle className="text-xl text-red-800 flex items-center gap-2">
+                    <AlertTriangle className="w-5 h-5" />
+                    Need Immediate Help
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="pt-6">
+                  <ConsultantCarousel compact />
+                </CardContent>
+              </Card>
+            ) : null}
 
             <Card className="mb-8 border-2 border-[#3C1F71]/20">
               <CardHeader className="bg-[#E2DAF5]">
