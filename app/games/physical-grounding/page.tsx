@@ -26,7 +26,7 @@ export default function PhysicalGrounding() {
   const [timeLeft, setTimeLeft] = useState(0);
   const [progress, setProgress] = useState(0);
 
-  const { speak } = useVoiceGuide();
+  const { speak, stop } = useVoiceGuide();
 
   useLogGameActivity('Physical Grounding', isRunning);
 
@@ -121,7 +121,13 @@ export default function PhysicalGrounding() {
             </Button>
 
             <Button
-              onClick={() => setVoiceEnabled((prev) => !prev)}
+              onClick={() =>
+                setVoiceEnabled((prev) => {
+                  const next = !prev;
+                  if (!next) stop();
+                  return next;
+                })
+              }
               variant="outline"
               size="sm"
               className="border-2 border-teal-300 text-teal-600 hover:bg-teal-50"
