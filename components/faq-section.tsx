@@ -33,7 +33,7 @@ export function FAQSection({ title, items = [], page, schemaType = 'HomePage' }:
     if (!page) return;
     setLoading(true);
     try {
-      const res = await fetch(`/api/admin/faqs?page=${page}`);
+      const res = await fetch(`/api/faqs?page=${encodeURIComponent(page)}`, { cache: 'no-store' });
       const data = await res.json();
       const nextFaqs = Array.isArray(data?.data) ? data.data : [];
       setFaqs(nextFaqs.length > 0 ? nextFaqs : items);
