@@ -148,7 +148,7 @@ export default function AllActivities() {
                       <div className="flex items-center gap-2 mb-3">
                         <span className="text-xs font-semibold text-gray-500 uppercase">{game.category}</span>
                       </div>
-                      <h3 className="text-lg font-bold text-gray-900 mb-2">{game.title}</h3>
+                      <h2 className="text-lg font-bold text-gray-900 mb-2">{game.title}</h2>
                       <p className="text-sm text-gray-600">{game.description}</p>
                     </CardContent>
                   </Card>

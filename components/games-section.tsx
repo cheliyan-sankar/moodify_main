@@ -314,9 +314,9 @@ export function GamesSection() {
                 </div>
 
                 <div className="mt-[11px]">
-                  <h3 className="line-clamp-2 text-[18px] sm:text-[20px] md:text-[22px] font-semibold leading-[1.2] text-primary">
+                  <h2 className="line-clamp-2 text-[18px] sm:text-[20px] md:text-[22px] font-semibold leading-[1.2] text-primary">
                     {game.title}
-                  </h3>
+                  </h2>
                   <p className="mt-2 line-clamp-3 text-[12px] sm:text-[13px] leading-[1.35] text-[rgba(31,22,15,0.64)]">
                     {game.description}
                   </p>

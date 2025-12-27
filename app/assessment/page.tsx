@@ -14,7 +14,6 @@ import { useAuth } from '@/lib/auth-context';
 import { getGameRecommendations, type MoodType } from '@/lib/mood-service';
 import { HomeNavbar } from '@/components/home-navbar';
 import ConsultantCarousel from '@/components/consultant-carousel';
-import { DEFAULT_FAQS } from '@/lib/default-faqs';
 
 type TestType = 'panas' | 'phq9' | 'gad7' | null;
 
@@ -836,7 +835,6 @@ export default function PsychometricAssessment() {
         title="Assessment FAQs" 
         page="assessment" 
         schemaType="AssessmentPage"
-        items={DEFAULT_FAQS.assessment}
       />
       <AppFooter />
     </div>

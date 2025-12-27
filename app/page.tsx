@@ -17,7 +17,6 @@ import { supabase } from '@/lib/supabase';
 import { saveDailyMood, getGameRecommendations, getTodaysMood, type MoodType } from '@/lib/mood-service';
 import { AppFooter } from '@/components/app-footer';
 import StructuredData from '@/components/structured-data';
-import { DEFAULT_FAQS } from '@/lib/default-faqs';
 
 type Game = {
   id: string;
@@ -475,7 +474,6 @@ export default function Home() {
           <FAQSection
             title="Frequently Asked Questions"
             page="home"
-            items={DEFAULT_FAQS.home}
           />
         </div>
       </main>

@@ -11,7 +11,6 @@ import { GamesSection } from '@/components/games-section';
 import { FAQSection } from '@/components/faq-section';
 import { AppFooter } from '@/components/app-footer';
 import { HomeNavbar } from '@/components/home-navbar';
-import { DEFAULT_FAQS } from '@/lib/default-faqs';
 
 function DiscoverContent() {
   return (
@@ -127,7 +126,6 @@ function DiscoverContent() {
         <FAQSection
           title="Discover & Resources FAQs"
           page="discover"
-          items={DEFAULT_FAQS.discover}
         />
       </main>
 
