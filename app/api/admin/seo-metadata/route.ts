@@ -57,7 +57,18 @@ export async function PUT(request: NextRequest) {
     const supabase = createAdminClient();
     
     const body = await request.json();
-    const { id, title, description, keywords, og_image, og_title, og_description, twitter_card, canonical_url } = body;
+    const {
+      id,
+      page_url,
+      title,
+      description,
+      keywords,
+      og_image,
+      og_title,
+      og_description,
+      twitter_card,
+      canonical_url,
+    } = body;
 
     if (!id) {
       return NextResponse.json({ error: 'ID is required' }, { status: 400 });
@@ -66,6 +77,9 @@ export async function PUT(request: NextRequest) {
     const { data, error } = await supabase
       .from('seo_metadata')
       .update({
+        // Allow updating page_url so admins can correct or change the path key
+        // (be careful: the app still calls getSeoMetadata with the original path)
+        ...(page_url ? { page_url } : {}),
         title,
         description,
         keywords,

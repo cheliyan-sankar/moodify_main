@@ -4,6 +4,8 @@ import StructuredData from '@/components/structured-data';
 
 export const dynamic = 'force-dynamic';
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://moodlift.hexpertify.com';
+
 const defaultMetadata: Metadata = {
   title: 'Book Recommendations - Mood-Based Reading for Emotional Wellness',
   description: 'Discover personalized book recommendations based on your mood and emotional state. Find the perfect books to support your mental health and emotional well-being journey.',
@@ -11,11 +13,11 @@ const defaultMetadata: Metadata = {
   openGraph: {
     title: 'Book Recommendations - Mood-Based Reading for Emotional Wellness',
     description: 'Discover personalized book recommendations based on your mood and emotional state. Find the perfect books to support your mental health journey.',
-    url: 'https://moodlift.com/books',
+    url: `${SITE_URL}/books`,
     siteName: 'MoodLift',
     images: [
       {
-        url: 'https://moodlift.com/images/og-books.jpg',
+        url: `${SITE_URL}/images/og-books.jpg`,
         width: 1200,
         height: 630,
         alt: 'Mood-Based Book Recommendations for Emotional Wellness',
@@ -28,7 +30,7 @@ const defaultMetadata: Metadata = {
     card: 'summary_large_image',
     title: 'Book Recommendations - Mood-Based Reading for Emotional Wellness',
     description: 'Discover personalized book recommendations based on your mood and emotional state. Find the perfect books to support your mental health journey.',
-    images: ['https://moodlift.com/images/og-books.jpg'],
+    images: [`${SITE_URL}/images/og-books.jpg`],
   },
   alternates: {
     canonical: '/books',
@@ -46,12 +48,14 @@ export async function generateMetadata(): Promise<Metadata> {
       title: seo.title || defaultMetadata.title,
       description: seo.description || defaultMetadata.description,
       keywords: seo.keywords || defaultMetadata.keywords,
-      metadataBase: new URL('https://moodlift.com'),
-      alternates: defaultMetadata.alternates,
+      metadataBase: new URL(SITE_URL),
+      alternates: {
+        canonical: seo.canonical_url || defaultMetadata.alternates?.canonical,
+      },
       openGraph: {
         title: seo.title || defaultMetadata.openGraph?.title,
         description: seo.description || defaultMetadata.openGraph?.description,
-        url: 'https://moodlift.com/books',
+        url: seo.canonical_url || defaultMetadata.openGraph?.url,
         siteName: defaultMetadata.openGraph?.siteName,
         images: ogImages as any,
         locale: defaultMetadata.openGraph?.locale,

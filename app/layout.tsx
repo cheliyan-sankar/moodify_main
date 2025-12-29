@@ -4,10 +4,14 @@ import { getSeoMetadata } from '@/lib/seo-service';
 import { Inter } from 'next/font/google';
 import { AuthProvider } from '@/lib/auth-context';
 import { FavoritesProvider } from '@/lib/favorites-context';
+import Script from 'next/script';
+import { GAPageviewTracker } from '@/components/ga-pageview-tracker';
 
 export const dynamic = 'force-dynamic';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://moodlift.hexpertify.com';
 
 const defaultMetadata: Metadata = {
   title: 'MoodLift - AI-Powered Emotional Wellness Games & Activities',
@@ -21,18 +25,18 @@ const defaultMetadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://moodlift.com'),
+  metadataBase: new URL(SITE_URL),
   alternates: {
-    canonical: 'https://moodlift.com',
+    canonical: SITE_URL,
   },
   openGraph: {
     title: 'MoodLift - AI-Powered Emotional Wellness Games & Activities',
     description: 'Transform your mood with AI-powered wellness games designed to boost emotional well-being. Take mood assessments, play interactive activities, and track your mental health journey.',
-    url: 'https://moodlift.com',
+    url: SITE_URL,
     siteName: 'MoodLift',
     images: [
       {
-        url: 'https://moodlift.com/images/og-home.jpg',
+        url: `${SITE_URL}/images/og-home.jpg`,
         width: 1200,
         height: 630,
         alt: 'MoodLift - AI-Powered Emotional Wellness Platform',
@@ -45,7 +49,7 @@ const defaultMetadata: Metadata = {
     card: 'summary_large_image',
     title: 'MoodLift - AI-Powered Emotional Wellness Games & Activities',
     description: 'Transform your mood with AI-powered wellness games designed to boost emotional well-being. Take mood assessments, play interactive activities, and track your mental health journey.',
-    images: ['https://moodlift.com/images/og-home.jpg'],
+    images: [`${SITE_URL}/images/og-home.jpg`],
     creator: '@moodlift',
   },
   robots: {
@@ -77,11 +81,13 @@ export async function generateMetadata(): Promise<Metadata> {
       description: seo.description || defaultMetadata.description,
       keywords: seo.keywords || defaultMetadata.keywords,
       metadataBase: defaultMetadata.metadataBase,
-      alternates: defaultMetadata.alternates,
+      alternates: {
+        canonical: seo.canonical_url || defaultMetadata.alternates?.canonical,
+      },
       openGraph: {
         title: seo.title || defaultMetadata.openGraph?.title,
         description: seo.description || defaultMetadata.openGraph?.description,
-        url: `${defaultMetadata.metadataBase?.toString()?.replace(/\/$/, '')}/`,
+        url: seo.canonical_url || defaultMetadata.openGraph?.url,
         siteName: defaultMetadata.openGraph?.siteName,
         images: ogImages as any,
         locale: defaultMetadata.openGraph?.locale,
@@ -104,6 +110,8 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || 'G-N50516YPJN';
+
   return (
     <html lang="en">
       <head>
@@ -119,10 +127,31 @@ export default function RootLayout({
             </noscript>
           </>
         ) : null}
+
+        {/* Favicon / tab icon */}
+        <link rel="icon" type="image/png" href="/images/MoodLift_Logo.png" />
+
+        {/* Google Analytics (GA4) */}
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script
+          id="ga4-init"
+          strategy="afterInteractive"
+        >
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){window.dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GA_MEASUREMENT_ID}');
+          `}
+        </Script>
       </head>
       <body className={`${inter.variable} font-sans`}>
         <AuthProvider>
           <FavoritesProvider>
+          <GAPageviewTracker />
           {children}
           </FavoritesProvider>
         </AuthProvider>
