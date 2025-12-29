@@ -112,13 +112,13 @@ export default function AboutPage() {
           <CardContent className="space-y-6 text-sm text-muted-foreground">
             <div className="text-sm text-muted-foreground space-y-4">
               <p>
-                Moodify is a Mental wellness platform owned by <a href="https://hexpertify.com" target="_blank" rel="noopener noreferrer" className="font-bold text-primary hover:underline">Hexpertify</a> designed to help people understand, regulate,
+                MoodLift is a Mental wellness platform owned by <a href="https://hexpertify.com" target="_blank" rel="noopener noreferrer" className="font-bold text-primary hover:underline">Hexpertify</a> designed to help people understand, regulate,
                 and improve their mood through simple, engaging activities.
               </p>
 
               <p>
-                We believe emotional well-being doesn’t always need long sessions or complicated tools. Sometimes,
-                small moments of awareness, reflection, and play can make a real difference. Moodify brings together
+                We believe emotional well-being doesnt always need long sessions or complicated tools. Sometimes,
+                small moments of awareness, reflection, and play can make a real difference. MoodLift brings together
                 <span className="font-semibold"> mood check-ins</span>, <span className="font-semibold">calming exercises</span>, and <span className="font-semibold">science-inspired wellness games</span> to help users feel more balanced
                 in their daily lives.
               </p>
@@ -129,7 +129,7 @@ export default function AboutPage() {
               </p>
 
               <p>
-                Moodify is <span className="font-semibold">not a replacement</span> for therapy. It is a supportive self-care space for anyone who wants to
+                MoodLift is <span className="font-semibold">not a replacement</span> for therapy. It is a supportive self-care space for anyone who wants to
                 pause, check in with themselves, and build healthier emotional habits over time.
               </p>
             </div>

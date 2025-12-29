@@ -17,8 +17,8 @@ export async function POST(request: NextRequest) {
 
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const adminEmail = 'admin@moodify.com';
-    const adminPassword = 'MoodifyAdmin2024!';
+    const adminEmail = 'admin@moodlift.com';
+    const adminPassword = 'MoodLiftAdmin2024!';
 
     // Create auth user
     const { data: authData, error: authError } = await supabase.auth.admin.createUser({

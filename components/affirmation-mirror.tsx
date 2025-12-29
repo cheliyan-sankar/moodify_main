@@ -235,7 +235,7 @@ export function AffirmationMirror() {
       );
       if (!blob) return;
 
-      const fileName = `moodify-moment-${new Date().toISOString().slice(0, 10)}.png`;
+      const fileName = `moodlift-moment-${new Date().toISOString().slice(0, 10)}.png`;
       const file = new File([blob], fileName, { type: 'image/png' });
 
       const navAny = navigator as any;
@@ -243,8 +243,8 @@ export function AffirmationMirror() {
       if (typeof navAny?.share === 'function' && canShareFiles) {
         await navAny.share({
           files: [file],
-          title: 'Moodify Moment',
-          text: 'Captured from Moodify',
+          title: 'MoodLift Moment',
+          text: 'Captured from MoodLift',
         });
         return;
       }

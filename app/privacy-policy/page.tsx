@@ -114,11 +114,11 @@ export default function PrivacyPolicyPage() {
             <p className="font-medium">Last Updated: 23/12/2025</p>
 
             <p>
-              Moodify respects your privacy and is committed to protecting your personal information. This Privacy
+              MoodLift respects your privacy and is committed to protecting your personal information. This Privacy
               Policy explains how we collect, use, store, and protect your data when you use our platform.
             </p>
 
-            <p>By accessing or using Moodify, you agree to the practices described in this policy.</p>
+            <p>By accessing or using MoodLift, you agree to the practices described in this policy.</p>
 
             <div>
               <h2 className="text-base font-semibold text-primary mb-2">1. Information We Collect</h2>
@@ -174,7 +174,7 @@ export default function PrivacyPolicyPage() {
 
             <div>
               <h2 className="text-base font-semibold text-primary mb-2">5. Cookies and Tracking Technologies</h2>
-              <p>Moodify may use cookies or similar technologies to ensure platform functionality, analyze usage, and improve performance. You can manage cookie preferences through your browser settings.</p>
+              <p>MoodLift may use cookies or similar technologies to ensure platform functionality, analyze usage, and improve performance. You can manage cookie preferences through your browser settings.</p>
             </div>
 
             <div>
@@ -190,7 +190,7 @@ export default function PrivacyPolicyPage() {
 
             <div>
               <h2 className="text-base font-semibold text-primary mb-2">7. Mental Health Disclaimer</h2>
-              <p>Moodify is a self-care and wellness support platform. It does not provide medical advice, diagnosis, or therapy and should not be considered a substitute for professional mental health care. If you are experiencing severe emotional distress, please seek help from a qualified professional.</p>
+              <p>MoodLift is a self-care and wellness support platform. It does not provide medical advice, diagnosis, or therapy and should not be considered a substitute for professional mental health care. If you are experiencing severe emotional distress, please seek help from a qualified professional.</p>
             </div>
 
             <div>
@@ -209,7 +209,7 @@ export default function PrivacyPolicyPage() {
 
             <div>
               <Link href="/about" className="inline-block" title="Learn about MoodLift and our mission">
-                <Button variant="outline">About Moodify</Button>
+                <Button variant="outline">About MoodLift</Button>
               </Link>
             </div>
           </CardContent>

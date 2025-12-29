@@ -87,7 +87,7 @@ function getLocalDateKey(date: Date): string {
 }
 
 function getDailyMoodQuotesByDateKey(dateKey: string, count = 5): MoodQuote[] {
-  const seed = hashStringToSeed(`moodify:${dateKey}`);
+  const seed = hashStringToSeed(`moodlift:${dateKey}`);
   const shuffled = shuffleDeterministic(QUOTE_POOL, seed);
   return shuffled.slice(0, Math.max(1, Math.min(count, shuffled.length)));
 }

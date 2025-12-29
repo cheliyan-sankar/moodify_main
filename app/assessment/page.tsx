@@ -54,7 +54,7 @@ const assessmentCollectionSchema = {
   name: "Mental Health Assessments",
   description:
     "A collection of scientifically validated mental health self-assessment tools available on MoodLift.",
-  url: "https://moodify-main-gojz.vercel.app/assessment",
+  url: "https://moodlift.com/assessment",
   mainEntity: {
     "@type": "ItemList",
     itemListOrder: "https://schema.org/ItemListOrderAscending",
@@ -72,7 +72,7 @@ const assessmentCollectionSchema = {
             "@type": "MedicalCondition",
             name: "Emotional affect and mood state",
           },
-          url: "https://moodify-main-gojz.vercel.app/assessment?test=panas",
+          url: "https://moodlift.com/assessment?test=panas",
         },
       },
       {
@@ -87,7 +87,7 @@ const assessmentCollectionSchema = {
             "@type": "MedicalCondition",
             name: "Depression",
           },
-          url: "https://moodify-main-gojz.vercel.app/assessment?test=phq9",
+          url: "https://moodlift.com/assessment?test=phq9",
         },
       },
       {
@@ -102,7 +102,7 @@ const assessmentCollectionSchema = {
             "@type": "MedicalCondition",
             name: "Generalized anxiety disorder",
           },
-          url: "https://moodify-main-gojz.vercel.app/assessment?test=gad7",
+          url: "https://moodlift.com/assessment?test=gad7",
         },
       },
     ],
