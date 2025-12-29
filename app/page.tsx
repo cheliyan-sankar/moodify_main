@@ -207,11 +207,11 @@ export default function Home() {
   const [popularGames, setPopularGames] = useState<Game[]>([]);
 
   const moods = [
-    { id: 'stressed', label: 'Stressed', symbol: 'mood-stressed' },
-    { id: 'sad', label: 'Sad', symbol: 'mood-sad' },
-    { id: 'anxious', label: 'Anxious', symbol: 'mood-anxious' },
-    { id: 'bored', label: 'Bored', symbol: 'mood-bored' },
-    { id: 'happy', label: 'Happy', symbol: 'mood-happy' },
+    { id: 'stressed', label: 'Stressed', image: '/images/Stressed.webp' },
+    { id: 'sad', label: 'Sad', image: '/images/Sad.webp' },
+    { id: 'anxious', label: 'Anxious', image: '/images/Anxious.webp' },
+    { id: 'bored', label: 'Bored', image: '/images/Bored.webp' },
+    { id: 'happy', label: 'Happy', image: '/images/Happy.webp' },
   ] as const;
 
   const getIconComponent = (iconName: string) => {
@@ -263,14 +263,12 @@ export default function Home() {
                 onClick={() => handleMoodSelect(mood.id)}
                 className="bg-muted/70 hover:bg-muted border border-border rounded-3xl p-4 sm:p-5 transition-all duration-300 transform hover:scale-105"
               >
-                <svg className="w-24 h-24 mx-auto" viewBox="0 0 53 53" aria-hidden="true">
-                  <use
-                    xlinkHref={`#${mood.symbol}`}
-                    href={`#${mood.symbol}`}
-                    width="53"
-                    height="53"
-                  />
-                </svg>
+                <img
+                  src={mood.image}
+                  alt={`${mood.label} mood`}
+                  className="w-24 h-24 mx-auto rounded-3xl object-cover"
+                  loading="lazy"
+                />
                 <p className="mt-2 text-base sm:text-lg font-semibold text-muted-foreground">{mood.label}</p>
               </button>
             ))}

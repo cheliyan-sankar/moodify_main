@@ -4,7 +4,6 @@ import { getSeoMetadata } from '@/lib/seo-service';
 import { Inter } from 'next/font/google';
 import { AuthProvider } from '@/lib/auth-context';
 import { FavoritesProvider } from '@/lib/favorites-context';
-import { TrackYourMoodSprite } from '@/components/track-your-mood-sprite';
 
 export const dynamic = 'force-dynamic';
 
@@ -124,7 +123,6 @@ export default function RootLayout({
       <body className={`${inter.variable} font-sans`}>
         <AuthProvider>
           <FavoritesProvider>
-          <TrackYourMoodSprite />
           {children}
           </FavoritesProvider>
         </AuthProvider>
