@@ -264,7 +264,12 @@ export default function Home() {
                 className="bg-muted/70 hover:bg-muted border border-border rounded-3xl p-4 sm:p-5 transition-all duration-300 transform hover:scale-105"
               >
                 <svg className="w-24 h-24 mx-auto" viewBox="0 0 53 53" aria-hidden="true">
-                  <use href={`/track-your-mood.svg#${mood.symbol}`} width="53" height="53" />
+                  <use
+                    xlinkHref={`/track-your-mood.svg#${mood.symbol}`}
+                    href={`/track-your-mood.svg#${mood.symbol}`}
+                    width="53"
+                    height="53"
+                  />
                 </svg>
                 <p className="mt-2 text-base sm:text-lg font-semibold text-muted-foreground">{mood.label}</p>
               </button>
