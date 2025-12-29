@@ -12,6 +12,8 @@ export const dynamic = 'force-dynamic';
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://moodlift.hexpertify.com';
+// Ensure the homepage canonical URL always has a trailing slash
+const HOME_URL = SITE_URL.replace(/\/$/, '') + '/';
 
 const defaultMetadata: Metadata = {
   title: 'MoodLift - AI-Powered Emotional Wellness Games & Activities',
@@ -27,7 +29,7 @@ const defaultMetadata: Metadata = {
   },
   metadataBase: new URL(SITE_URL),
   alternates: {
-    canonical: SITE_URL,
+    canonical: HOME_URL,
   },
   openGraph: {
     title: 'MoodLift - AI-Powered Emotional Wellness Games & Activities',
@@ -36,7 +38,7 @@ const defaultMetadata: Metadata = {
     siteName: 'MoodLift',
     images: [
       {
-        url: `${SITE_URL}/images/og-home.jpg`,
+        url: `${HOME_URL}/images/og-home.jpg`,
         width: 1200,
         height: 630,
         alt: 'MoodLift - AI-Powered Emotional Wellness Platform',
@@ -82,12 +84,12 @@ export async function generateMetadata(): Promise<Metadata> {
       keywords: seo.keywords || defaultMetadata.keywords,
       metadataBase: defaultMetadata.metadataBase,
       alternates: {
-        canonical: seo.canonical_url || defaultMetadata.alternates?.canonical,
+        canonical: seo.canonical_url || HOME_URL,
       },
       openGraph: {
         title: seo.title || defaultMetadata.openGraph?.title,
         description: seo.description || defaultMetadata.openGraph?.description,
-        url: seo.canonical_url || defaultMetadata.openGraph?.url,
+        url: seo.canonical_url || HOME_URL,
         siteName: defaultMetadata.openGraph?.siteName,
         images: ogImages as any,
         locale: defaultMetadata.openGraph?.locale,

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Sparkles, ClipboardList } from 'lucide-react';
@@ -35,7 +35,7 @@ export default function Home() {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     '@id': 'https://moodlift.hexpertify.com/#website',
-    url: 'https://moodlift.hexpertify.com',
+    url: 'https://moodlift.hexpertify.com/',
     name: 'MoodLift',
     description:
       'MoodLift is a Mental wellness platform designed to help people understand, regulate, and improve their mood through simple, engaging activities.',
@@ -52,6 +52,7 @@ export default function Home() {
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
   const [recommendations, setRecommendations] = useState<Game[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
+  const recommendationsRef = useRef<HTMLDivElement | null>(null);
 
   const handleAssessmentClick = () => {
     router.push('/assessment');
@@ -206,6 +207,12 @@ export default function Home() {
 
   const [popularGames, setPopularGames] = useState<Game[]>([]);
 
+  useEffect(() => {
+    if (selectedMood && recommendations.length > 0 && recommendationsRef.current) {
+      recommendationsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [selectedMood, recommendations]);
+
   const moods = [
     { id: 'stressed', label: 'Stressed', image: '/images/Stressed.png' },
     { id: 'sad', label: 'Sad', image: '/images/Sad.png' },
@@ -280,7 +287,11 @@ export default function Home() {
           )}
 
           {recommendations.length > 0 && (
-            <div className="mt-12 max-w-4xl mx-auto">
+            <div
+              ref={recommendationsRef}
+              id="recommended-activities"
+              className="mt-12 max-w-4xl mx-auto"
+            >
               <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-primary mb-6 text-center">Recommended for you</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
                 {recommendations.map((g) => {
