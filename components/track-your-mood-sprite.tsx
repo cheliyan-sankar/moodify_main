@@ -17,7 +17,11 @@ export function TrackYourMoodSprite() {
   }
 
   return (
-    <div className="hidden" aria-hidden="true" suppressHydrationWarning>
+    <div
+      aria-hidden="true"
+      suppressHydrationWarning
+      style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}
+    >
       {/* eslint-disable-next-line react/no-danger */}
       <div dangerouslySetInnerHTML={{ __html: svgContent }} />
     </div>
