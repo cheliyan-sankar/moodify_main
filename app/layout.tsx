@@ -15,6 +15,35 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://moodlift.hexpertif
 // Ensure the homepage canonical URL always has a trailing slash
 const HOME_URL = SITE_URL.replace(/\/$/, '') + '/';
 
+function buildCanonicalFromSeo(rawCanonical: string | undefined | null, fallbackPath: string): string {
+  const origin = SITE_URL.replace(/\/$/, '');
+
+  if (!rawCanonical) {
+    return `${origin}${fallbackPath}`;
+  }
+
+  const trimmed = rawCanonical.trim();
+
+  // Already an absolute URL
+  if (/^https?:\/\//i.test(trimmed)) {
+    return trimmed;
+  }
+
+  // Starts with a slash → treat as path on this origin
+  if (trimmed.startsWith('/')) {
+    return `${origin}${trimmed}`;
+  }
+
+  // Looks like a bare domain (e.g. moodlift.hexpertify.com)
+  if (/^[^\/\s]+\.[^\/\s]+/.test(trimmed)) {
+    return `https://${trimmed.replace(/\/$/, '')}/`;
+  }
+
+  // Fallback: treat as relative path
+  const path = trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
+  return `${origin}${path}`;
+}
+
 const defaultMetadata: Metadata = {
   title: 'MoodLift - AI-Powered Emotional Wellness Games & Activities',
   description: 'Transform your mood with AI-powered wellness games designed to boost emotional well-being. Take mood assessments, play interactive activities, and track your mental health journey.',
@@ -75,7 +104,16 @@ export async function generateMetadata(): Promise<Metadata> {
     const seo = await getSeoMetadata('/');
     if (!seo) return defaultMetadata;
 
-    const ogImages = seo.og_image ? [{ url: seo.og_image, alt: seo.title }] : defaultMetadata.openGraph?.images;
+    const canonicalUrl = buildCanonicalFromSeo(seo.canonical_url, '/');
+    const imageUrl = SITE_URL.replace(/\/$/, '') + '/images/MoodLift_Logo.png';
+    const ogImages = [
+      {
+        url: imageUrl,
+        width: 1200,
+        height: 630,
+        alt: seo.title || 'MoodLift - AI-Powered Emotional Wellness Platform',
+      },
+    ];
 
     // Return metadata merged with defaults, including robots settings
     return {
@@ -84,12 +122,12 @@ export async function generateMetadata(): Promise<Metadata> {
       keywords: seo.keywords || defaultMetadata.keywords,
       metadataBase: defaultMetadata.metadataBase,
       alternates: {
-        canonical: seo.canonical_url || HOME_URL,
+        canonical: canonicalUrl,
       },
       openGraph: {
         title: seo.title || defaultMetadata.openGraph?.title,
         description: seo.description || defaultMetadata.openGraph?.description,
-        url: seo.canonical_url || HOME_URL,
+        url: canonicalUrl,
         siteName: defaultMetadata.openGraph?.siteName,
         images: ogImages as any,
         locale: defaultMetadata.openGraph?.locale,
@@ -97,7 +135,7 @@ export async function generateMetadata(): Promise<Metadata> {
       twitter: {
         title: seo.title || defaultMetadata.twitter?.title,
         description: seo.description || defaultMetadata.twitter?.description,
-        images: seo.og_image ? [seo.og_image] : defaultMetadata.twitter?.images,
+        images: [imageUrl],
       },
       robots: defaultMetadata.robots,
     } as Metadata;

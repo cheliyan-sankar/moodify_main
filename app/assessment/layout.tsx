@@ -6,6 +6,31 @@ export const dynamic = 'force-dynamic';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://moodlift.hexpertify.com';
 
+function buildCanonicalFromSeo(rawCanonical: string | undefined | null, fallbackPath: string): string {
+  const origin = SITE_URL.replace(/\/$/, '');
+
+  if (!rawCanonical) {
+    return `${origin}${fallbackPath}`;
+  }
+
+  const trimmed = rawCanonical.trim();
+
+  if (/^https?:\/\//i.test(trimmed)) {
+    return trimmed;
+  }
+
+  if (trimmed.startsWith('/')) {
+    return `${origin}${trimmed}`;
+  }
+
+  if (/^[^\/\s]+\.[^\/\s]+/.test(trimmed)) {
+    return `https://${trimmed.replace(/\/$/, '')}/`;
+  }
+
+  const path = trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
+  return `${origin}${path}`;
+}
+
 const defaultMetadata: Metadata = {
   title: 'Mood Assessment - Take Your Emotional Wellness Test | MoodLift',
   description: 'Take scientifically validated mood assessments including PANAS, PHQ-9, and GAD-7 to understand your emotional state and get personalized wellness recommendations.',
@@ -42,6 +67,8 @@ export async function generateMetadata(): Promise<Metadata> {
     const seo = await getSeoMetadata('/assessment');
     if (!seo) return defaultMetadata;
 
+    const canonicalUrl = buildCanonicalFromSeo(seo.canonical_url, '/assessment');
+
     const ogImages = seo.og_image ? [{ url: seo.og_image, alt: seo.title }] : defaultMetadata.openGraph?.images;
 
     return {
@@ -50,12 +77,12 @@ export async function generateMetadata(): Promise<Metadata> {
       keywords: seo.keywords || defaultMetadata.keywords,
       metadataBase: new URL(SITE_URL),
       alternates: {
-        canonical: seo.canonical_url || defaultMetadata.alternates?.canonical,
+        canonical: canonicalUrl,
       },
       openGraph: {
         title: seo.title || defaultMetadata.openGraph?.title,
         description: seo.description || defaultMetadata.openGraph?.description,
-        url: seo.canonical_url || defaultMetadata.openGraph?.url,
+        url: canonicalUrl,
         siteName: defaultMetadata.openGraph?.siteName,
         images: ogImages as any,
         locale: defaultMetadata.openGraph?.locale,

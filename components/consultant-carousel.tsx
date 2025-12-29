@@ -33,14 +33,21 @@ export default function ConsultantCarousel({ compact = false }: ConsultantCarous
     const name = consultant.full_name?.trim() || 'Consultant Name';
     const title = consultant.title?.trim() || 'Title';
 
-    const Action = ({ children }: { children: React.ReactNode }) =>
-      consultant.booking_url ? (
-        <a href={consultant.booking_url} target="_blank" rel="noopener noreferrer">
-          {children}
-        </a>
-      ) : (
-        <Link href={`/consultants/${consultant.id}`}>{children}</Link>
-      );
+    const Action = ({ children }: { children: React.ReactNode }) => {
+      const bookingUrl = consultant.booking_url?.trim();
+
+      if (bookingUrl) {
+        return (
+          <a href={bookingUrl} target="_blank" rel="noopener noreferrer">
+            {children}
+          </a>
+        );
+      }
+
+      // Fallback: route users to the contact page when a direct
+      // booking link is not configured for this consultant.
+      return <Link href="/contact">{children}</Link>;
+    };
 
     return (
       <div className="rounded-2xl bg-card text-card-foreground shadow-sm border-2 p-3">
