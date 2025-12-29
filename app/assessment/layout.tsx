@@ -58,7 +58,7 @@ const defaultMetadata: Metadata = {
     images: [`${SITE_URL}/images/og-assessment.jpg`],
   },
   alternates: {
-    canonical: '/assessment',
+    canonical: '/mood-assessment',
   },
 };
 
@@ -67,7 +67,7 @@ export async function generateMetadata(): Promise<Metadata> {
     const seo = await getSeoMetadata('/assessment');
     if (!seo) return defaultMetadata;
 
-    const canonicalUrl = buildCanonicalFromSeo(seo.canonical_url, '/assessment');
+    const canonicalUrl = buildCanonicalFromSeo(seo.canonical_url, '/mood-assessment');
 
     const ogImages = seo.og_image ? [{ url: seo.og_image, alt: seo.title }] : defaultMetadata.openGraph?.images;
 
@@ -112,7 +112,7 @@ export default function AssessmentLayout({
           "@type": "WebPage",
           "name": "Mood Assessment - MoodLift",
           "description": "Take scientifically validated mood assessments to understand your emotional state and get personalized wellness recommendations.",
-          "url": "/assessment",
+          "url": "/mood-assessment",
           "publisher": {
             "@type": "Organization",
             "name": "MoodLift",

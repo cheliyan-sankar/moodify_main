@@ -348,12 +348,6 @@ export default function ConsultantCarousel({ compact = false }: ConsultantCarous
           lastMoveTimeRef.current = performance.now();
           lastMoveXRef.current = e.clientX;
           velocityRef.current = 0;
-
-          try {
-            (e.currentTarget as HTMLDivElement).setPointerCapture(e.pointerId);
-          } catch {
-            // no-op
-          }
         }}
         onPointerMove={(e) => {
           if (!isDraggingRef.current) return;

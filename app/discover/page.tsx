@@ -36,7 +36,7 @@ function DiscoverContent() {
                 </p>
 
                 <div className="w-full md:w-auto">
-                  <Link href="/assessment" title="Take our AI-powered mood assessment for personalized insights">
+                  <Link href="/mood-assessment" title="Take our AI-powered mood assessment for personalized insights">
                     <Button className="w-full md:w-auto h-11 rounded-md px-8 bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity text-xs sm:text-sm md:text-base">
                       Start Assessment
                     </Button>

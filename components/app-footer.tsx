@@ -24,7 +24,7 @@ export function AppFooter() {
             <h3 className="font-semibold text-primary mb-4">Features</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <Link href="/assessment" className="hover:text-primary transition-colors" title="Take our AI-powered mood assessment">
+                <Link href="/mood-assessment" className="hover:text-primary transition-colors" title="Take our AI-powered mood assessment">
                   Mood Assessment
                 </Link>
               </li>

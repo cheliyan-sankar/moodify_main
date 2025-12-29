@@ -255,8 +255,8 @@ export function GamesSection() {
             "@graph": [
               {
                 "@type": "CollectionPage",
-                "@id": "https://moodlift.hexpertify.com/games#collectionpage",
-                "url": "https://moodlift.hexpertify.com/games",
+                "@id": "https://moodlift.hexpertify.com/games&activities#collectionpage",
+                "url": "https://moodlift.hexpertify.com/games&activities",
                 "name": "All Activities & Games – MoodLift",
                 "description":
                   "A collection of interactive mental wellness games and grounding activities designed to support emotional regulation, relaxation, and self-care.",
@@ -271,7 +271,7 @@ export function GamesSection() {
               },
               {
                 "@type": "ItemList",
-                "@id": "https://moodlift.hexpertify.com/games#itemlist",
+                "@id": "https://moodlift.hexpertify.com/games&activities#itemlist",
                 "name": "MoodLift Wellness Activities",
                 "description":
                   "A structured list of guided wellness activities based on breathing techniques, grounding practices, and cognitive behavioral approaches.",

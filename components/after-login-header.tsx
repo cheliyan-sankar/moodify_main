@@ -20,7 +20,7 @@ interface UserProfileData {
 
 const navigationItems = [
   { label: 'Home', href: '/', icon: Home },
-  { label: 'Test', href: '/assessment', icon: ClipboardList },
+  { label: 'Test', href: '/mood-assessment', icon: ClipboardList },
   { label: 'Games', href: '/games', icon: Gamepad2 },
   { label: 'Discover', href: '/discover', icon: Sparkles },
   { label: 'Profile', href: '/progress', icon: Gift },

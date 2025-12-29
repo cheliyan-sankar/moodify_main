@@ -38,7 +38,7 @@ export function HomeNavbar({ onAuthSuccess }: HomeNavbarProps) {
 
   const handleAssessmentClick = () => {
     if (user) {
-      router.push('/assessment');
+      router.push('/mood-assessment');
     } else {
       setShowAuthModal(true);
     }

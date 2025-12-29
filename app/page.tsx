@@ -55,7 +55,7 @@ export default function Home() {
   const recommendationsRef = useRef<HTMLDivElement | null>(null);
 
   const handleAssessmentClick = () => {
-    router.push('/assessment');
+    router.push('/mood-assessment');
   };
 
   useEffect(() => {
@@ -97,12 +97,12 @@ export default function Home() {
       try {
         const todays = await getTodaysMood(userId);
         if (!todays) {
-          router.push('/assessment');
+          router.push('/mood-assessment');
         }
       } catch (e) {
         console.error('Error checking today mood after auth:', e);
         // fallback to redirecting to assessment
-        router.push('/assessment');
+        router.push('/mood-assessment');
       }
     } catch (e) {
       console.error('Error handling auth success:', e);
