@@ -290,9 +290,12 @@ export default function Home() {
             <div
               ref={recommendationsRef}
               id="recommended-activities"
-              className="mt-12 max-w-4xl mx-auto"
+              className="mt-12 max-w-4xl mx-auto scroll-mt-24 sm:scroll-mt-28 md:scroll-mt-32"
             >
-              <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-primary mb-6 text-center">Recommended for you</h3>
+              <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-primary mb-2 text-center">Recommended for you</h3>
+              <p className="text-sm sm:text-base text-muted-foreground mb-6 text-center max-w-xl mx-auto">
+                Based on how you’re feeling right now, these activities can help you feel more balanced.
+              </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
                 {recommendations.map((g) => {
                   const slug = g.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');

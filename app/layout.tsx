@@ -38,7 +38,7 @@ const defaultMetadata: Metadata = {
     siteName: 'MoodLift',
     images: [
       {
-        url: `${HOME_URL}/images/og-home.jpg`,
+        url: `${HOME_URL}/images/MoodLift_Logo.png`,
         width: 1200,
         height: 630,
         alt: 'MoodLift - AI-Powered Emotional Wellness Platform',
@@ -51,7 +51,7 @@ const defaultMetadata: Metadata = {
     card: 'summary_large_image',
     title: 'MoodLift - AI-Powered Emotional Wellness Games & Activities',
     description: 'Transform your mood with AI-powered wellness games designed to boost emotional well-being. Take mood assessments, play interactive activities, and track your mental health journey.',
-    images: [`${SITE_URL}/images/og-home.jpg`],
+    images: [`${SITE_URL}/images/MoodLift_Logo.png`],
     creator: '@moodlift',
   },
   robots: {
