@@ -44,6 +44,8 @@ export async function POST(request: NextRequest) {
       genre,
       cover_image_url,
       affiliate_link,
+      amazon_affiliate_link,
+      flipkart_affiliate_link,
       recommended_by,
       recommendation_reason
     } = body;
@@ -52,6 +54,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Title and author are required' }, { status: 400 });
     }
 
+    // Affiliate links are optional when creating a book; if provided, they will be saved.
     const insertPayload: any = {
       title,
       author,
@@ -62,6 +65,8 @@ export async function POST(request: NextRequest) {
 
     if (cover_image_url !== undefined) insertPayload.cover_image_url = cover_image_url;
     if (affiliate_link !== undefined) insertPayload.affiliate_link = affiliate_link;
+    if (amazon_affiliate_link !== undefined) insertPayload.amazon_affiliate_link = amazon_affiliate_link;
+    if (flipkart_affiliate_link !== undefined) insertPayload.flipkart_affiliate_link = flipkart_affiliate_link;
 
     if (recommended_by !== undefined) insertPayload.recommended_by = recommended_by;
     if (recommendation_reason !== undefined) insertPayload.recommendation_reason = recommendation_reason;
@@ -119,6 +124,8 @@ export async function PUT(request: NextRequest) {
       cover_color: body.cover_color,
       genre: body.genre,
       affiliate_link: body.affiliate_link,
+      amazon_affiliate_link: body.amazon_affiliate_link,
+      flipkart_affiliate_link: body.flipkart_affiliate_link,
     };
 
     if (body.cover_image_url !== undefined) updatePayload.cover_image_url = body.cover_image_url;

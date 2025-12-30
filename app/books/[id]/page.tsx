@@ -418,11 +418,13 @@ function BookDetailContent() {
                       </Button>
                     )}
                   </div>
-                  {!book.amazon_affiliate_link && !book.flipkart_affiliate_link && (
-                    <p className="text-sm text-white/80 text-center pt-2">
-                      Links coming soon - check your library or bookstore
-                    </p>
-                  )}
+                  {!book.amazon_affiliate_link &&
+                    !book.flipkart_affiliate_link &&
+                    !book.affiliate_link && (
+                      <p className="text-sm text-white/80 text-center pt-2">
+                        Coming soon... links will be available here once added.
+                      </p>
+                    )}
                 </div>
               </CardContent>
             </Card>
