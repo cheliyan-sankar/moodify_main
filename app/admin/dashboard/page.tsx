@@ -67,7 +67,6 @@ interface Testimonial {
   user_name: string;
   user_title: string | null;
   feedback: string;
-  rating: number;
   avatar_url: string | null;
   display_order: number;
   is_active: boolean;
@@ -695,7 +694,6 @@ export default function AdminDashboard() {
       user_name: '',
       user_title: '',
       feedback: '',
-      rating: 5,
       avatar_url: '',
       display_order: testimonials.length,
       is_active: true,
@@ -1617,7 +1615,6 @@ export default function AdminDashboard() {
                       >
                         <div className="font-medium truncate">{testimonial.user_name}</div>
                         <div className="text-xs text-muted-foreground line-clamp-1">{testimonial.feedback}</div>
-                        <div className="text-xs mt-1">{'⭐'.repeat(testimonial.rating)}</div>
                       </button>
                     ))}
                   </CardContent>
@@ -1659,21 +1656,6 @@ export default function AdminDashboard() {
                           placeholder="User testimonial"
                           rows={4}
                         />
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium">Rating</label>
-                        <div className="flex gap-2">
-                          {[1, 2, 3, 4, 5].map((star) => (
-                            <button
-                              key={star}
-                              onClick={() => setSelectedTestimonial({...selectedTestimonial, rating: star})}
-                              className={`text-2xl transition-opacity ${star <= selectedTestimonial.rating ? 'opacity-100' : 'opacity-30'}`}
-                            >
-                              ⭐
-                            </button>
-                          ))}
-                        </div>
                       </div>
 
                       <div className="space-y-2">

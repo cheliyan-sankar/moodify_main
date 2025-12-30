@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
     const supabase = createAdminClient();
     
     const body = await request.json();
-    const { user_name, user_title, feedback, rating, avatar_url, is_active, display_order } = body;
+    const { user_name, user_title, feedback, avatar_url, is_active, display_order } = body;
 
     if (!user_name || !feedback) {
       return NextResponse.json({ error: 'User name and feedback are required' }, { status: 400 });
@@ -50,7 +50,6 @@ export async function POST(request: NextRequest) {
         user_name,
         user_title: user_title || null,
         feedback,
-        rating: rating || 5,
         avatar_url: avatar_url || null,
         is_active: is_active !== false,
         display_order: display_order || 0,
@@ -72,7 +71,7 @@ export async function PUT(request: NextRequest) {
     const supabase = createAdminClient();
     
     const body = await request.json();
-    const { id, user_name, user_title, feedback, rating, avatar_url, is_active, display_order } = body;
+    const { id, user_name, user_title, feedback, avatar_url, is_active, display_order } = body;
 
     if (!id) {
       return NextResponse.json({ error: 'Testimonial ID is required' }, { status: 400 });
@@ -84,7 +83,6 @@ export async function PUT(request: NextRequest) {
         user_name,
         user_title,
         feedback,
-        rating,
         avatar_url,
         is_active,
         display_order,

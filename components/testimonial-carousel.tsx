@@ -13,7 +13,6 @@ type Testimonial = {
   user_name: string;
   user_title: string | null;
   feedback: string;
-  rating: number;
   avatar_url: string | null;
   display_order: number;
 };
@@ -98,19 +97,6 @@ export function TestimonialCarousel() {
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 <CardContent className="p-6 flex flex-col h-full">
-                  <div className="flex gap-1 mb-4">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`w-5 h-5 ${
-                          i < testimonial.rating
-                            ? 'fill-yellow-400 text-yellow-400'
-                            : 'text-gray-300'
-                        }`}
-                      />
-                    ))}
-                  </div>
-
                   <p className="text-gray-700 mb-6 leading-relaxed line-clamp-3 flex-1">
                     &ldquo;{testimonial.feedback}&rdquo;
                   </p>
