@@ -47,7 +47,8 @@ export async function POST(request: NextRequest) {
       amazon_affiliate_link,
       flipkart_affiliate_link,
       recommended_by,
-      recommendation_reason
+      recommendation_reason,
+      rating,
     } = body;
 
     if (!title || !author) {
@@ -70,6 +71,8 @@ export async function POST(request: NextRequest) {
 
     if (recommended_by !== undefined) insertPayload.recommended_by = recommended_by;
     if (recommendation_reason !== undefined) insertPayload.recommendation_reason = recommendation_reason;
+
+  if (typeof rating === 'number') insertPayload.rating = rating;
 
     const { data, error } = await supabase
       .from('books')
@@ -132,6 +135,8 @@ export async function PUT(request: NextRequest) {
 
     if (body.recommended_by !== undefined) updatePayload.recommended_by = body.recommended_by;
     if (body.recommendation_reason !== undefined) updatePayload.recommendation_reason = body.recommendation_reason;
+
+  if (body.rating !== undefined) updatePayload.rating = body.rating;
 
     const { data: updateData, error: updateError } = await supabase
       .from('books')

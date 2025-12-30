@@ -34,6 +34,7 @@ interface Book {
   description: string;
   cover_color: string;
   genre: string;
+  rating?: number;
   cover_image_url?: string;
   recommended_by?: string;
   recommendation_reason?: string;
@@ -562,6 +563,7 @@ export default function AdminDashboard() {
       description: '',
       cover_color: '#9b87f5',
       genre: 'Self-Help',
+      rating: 5,
       cover_image_url: '',
       recommended_by: '',
       recommendation_reason: '',
@@ -1095,6 +1097,33 @@ export default function AdminDashboard() {
                           value={selectedBook.genre}
                           onChange={(e) => setSelectedBook({...selectedBook, genre: e.target.value})}
                           placeholder="e.g., Self-Help, Fiction"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">Rating (0-5)</label>
+                        <Input
+                          type="number"
+                          min={0}
+                          max={5}
+                          step={0.1}
+                          value={
+                            selectedBook.rating === undefined || selectedBook.rating === null
+                              ? ''
+                              : selectedBook.rating
+                          }
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            if (value === '') {
+                              setSelectedBook({ ...selectedBook, rating: undefined });
+                              return;
+                            }
+                            const parsed = parseFloat(value);
+                            if (isNaN(parsed)) return;
+                            const clamped = Math.min(5, Math.max(0, parsed));
+                            setSelectedBook({ ...selectedBook, rating: clamped });
+                          }}
+                          placeholder="e.g., 4.5"
                         />
                       </div>
 
