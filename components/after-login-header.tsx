@@ -7,7 +7,7 @@ import { Sparkles, Home, ClipboardList, Gamepad2, Gift, LogOut, Flame, Menu, X }
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-context';
-import { generateInitials, getAvatarColor, getAvatarTextColor } from '@/lib/streak-utils';
+import { generateInitials, getAvatarColor, getAvatarTextColor, getToday } from '@/lib/streak-utils';
 import { useStreak } from '@/hooks/use-streak';
 import { useRewards } from '@/hooks/use-rewards';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -29,7 +29,7 @@ const navigationItems = [
 export function AfterLoginHeader() {
   const { user, signOut } = useAuth();
   const pathname = usePathname();
-  const { streakData, loading: streakLoading } = useStreak();
+  const { streakData, loading: streakLoading, updateStreak } = useStreak();
   const { totalPoints } = useRewards();
   const [userData, setUserData] = useState<UserProfileData | null>(null);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -66,6 +66,17 @@ export function AfterLoginHeader() {
 
     fetchUserProfile();
   }, [user]);
+
+  // Ensure the daily streak is updated once per day when a logged-in user visits
+  useEffect(() => {
+    if (!user || streakLoading) return;
+
+    const today = getToday();
+
+    if (!streakData || streakData.lastLoginDate !== today) {
+      updateStreak();
+    }
+  }, [user, streakLoading, streakData, updateStreak]);
 
   const handleSignOut = async () => {
     try {

@@ -115,7 +115,7 @@ export function TestimonialCarousel() {
                     >
                       &ldquo;{testimonial.feedback}&rdquo;
                     </p>
-                    {testimonial.feedback.length > 200 && (
+                    {testimonial.feedback.length > 80 && (
                       <button
                         type="button"
                         onClick={() => toggleExpanded(testimonial.id)}
