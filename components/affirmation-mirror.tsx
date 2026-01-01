@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -479,6 +480,18 @@ export function AffirmationMirror() {
                   <p className="text-gray-300 font-medium mb-2">Enable your camera to see your reflection</p>
                   <p className="text-gray-400 text-sm">Your affirmation will appear over your face</p>
                 </div>
+              </div>
+
+              {/* Logo in top-left corner of mirror */}
+              <div className="absolute top-3 left-3 z-20 pointer-events-none">
+                <Image
+                  src="/images/HexpertifyBlog Logo - MoodLiftLogo - Edited (2).png"
+                  alt="MoodLift logo"
+                  width={80}
+                  height={80}
+                  className="rounded-full bg-black/40 p-1"
+                  priority
+                />
               </div>
 
               {/* Affirmation Text Overlay */}
