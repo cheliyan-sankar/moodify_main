@@ -1,6 +1,6 @@
 'use client';
 
-import Image from 'next/image';
+import NextImage from 'next/image';
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -189,6 +189,30 @@ export function AffirmationMirror() {
       ctx.scale(-1, 1);
       ctx.drawImage(video, 0, 0, width, height);
       ctx.restore();
+
+      // Add logo overlay in the top-left, matching the UI mirror
+      try {
+        const logo = await new Promise<HTMLImageElement>((resolve, reject) => {
+          const img = new window.Image();
+          img.onload = () => resolve(img);
+          img.onerror = () => reject(new Error('Logo failed to load'));
+          img.src = '/images/HexpertifyBlog Logo - MoodLiftLogo - Edited (2).png';
+        });
+
+        const logoPadding = Math.round(width * 0.03);
+        const logoWidth = Math.round(width * 0.16);
+        const aspectRatio = logo.naturalHeight && logo.naturalWidth
+          ? logo.naturalHeight / logo.naturalWidth
+          : 1;
+        const logoHeight = Math.round(logoWidth * aspectRatio);
+
+        ctx.save();
+        ctx.globalAlpha = 0.95;
+        ctx.drawImage(logo, logoPadding, logoPadding, logoWidth, logoHeight);
+        ctx.restore();
+      } catch (e) {
+        console.warn('Logo overlay failed, proceeding without it', e);
+      }
 
       // Add a subtle bottom gradient + affirmation text overlay (to match UI)
       const gradient = ctx.createLinearGradient(0, height, 0, height * 0.55);
@@ -484,7 +508,7 @@ export function AffirmationMirror() {
 
               {/* Logo in top-left corner of mirror */}
               <div className="absolute top-3 left-3 z-20 pointer-events-none">
-                <Image
+                <NextImage
                   src="/images/HexpertifyBlog Logo - MoodLiftLogo - Edited (2).png"
                   alt="MoodLift logo"
                   width={80}
