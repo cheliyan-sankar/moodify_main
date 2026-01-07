@@ -14,7 +14,7 @@ function ThoughtChallengerContent() {
       <nav className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center h-16">
-            <Link href="/games&activities">
+            <Link href="/games-and-activities">
               <Button size="sm" className="bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back

@@ -12,6 +12,16 @@ const nextConfig = {
         destination: '/mood-assessment',
         permanent: true,
       },
+      {
+        source: '/games&activities',
+        destination: '/games-and-activities',
+        permanent: true,
+      },
+      {
+        source: '/games%26activities',
+        destination: '/games-and-activities',
+        permanent: true,
+      },
     ];
   },
   webpack: (config) => {

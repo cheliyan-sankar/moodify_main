@@ -1,1 +1,7 @@
-export { default, generateMetadata } from '../games/layout';
+export default function GamesAndActivitiesRedirectLayout({
+	children,
+}: {
+	children: React.ReactNode;
+}) {
+	return children;
+}

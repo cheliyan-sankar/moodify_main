@@ -27,7 +27,7 @@ function normalizeToPath(raw: string) {
 
 function encodePathnameForSitemap(pathname: string) {
   // Encode each segment so reserved XML characters (like '&') become safe in the final XML.
-  // Example: /games&activities -> /games%26activities
+  // Example: /a&b -> /a%26b
   return pathname
     .split('/')
     .map((segment, idx) => (idx === 0 ? '' : encodeURIComponent(segment)))
@@ -54,7 +54,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/contact',
     '/discover',
     '/games',
-    '/games&activities',
+    '/games-and-activities',
     '/mood-assessment',
     '/all-activities',
     '/dashboard',

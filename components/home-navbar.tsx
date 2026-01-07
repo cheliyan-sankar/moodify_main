@@ -81,7 +81,7 @@ export function HomeNavbar({ onAuthSuccess }: HomeNavbarProps) {
               </Button>
               {user && (
                 <>
-                  <Link href="/games&activities" title="Explore wellness games and activities">
+                  <Link href="/games-and-activities" title="Explore wellness games and activities">
                     <Button variant="ghost" size="sm">Games</Button>
                   </Link>
                   <Link href="/discover" title="Discover personalized recommendations">
@@ -155,7 +155,7 @@ export function HomeNavbar({ onAuthSuccess }: HomeNavbarProps) {
 
               {user && (
                 <>
-                  <Link href="/games&activities" className="block" title="Explore wellness games and activities">
+                  <Link href="/games-and-activities" className="block" title="Explore wellness games and activities">
                     <Button variant="ghost" className="w-full justify-start text-sm">
                       Games
                     </Button>

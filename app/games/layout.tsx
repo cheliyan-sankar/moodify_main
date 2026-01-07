@@ -13,7 +13,7 @@ const defaultMetadata: Metadata = {
   openGraph: {
     title: 'Games & Activities - Interactive Emotional Wellness Tools | MoodLift',
     description: 'Play interactive emotional wellness games and activities including breathing exercises, CBT challenges, grounding techniques, and mindfulness activities.',
-    url: `${SITE_URL.replace(/\/$/, '')}/games&activities`,
+    url: `${SITE_URL.replace(/\/$/, '')}/games-and-activities`,
     siteName: 'MoodLift',
     images: [
       {
@@ -33,7 +33,7 @@ const defaultMetadata: Metadata = {
     images: [`${SITE_URL.replace(/\/$/, '')}/images/og-games.jpg`],
   },
   alternates: {
-    canonical: '/games&activities',
+    canonical: '/games-and-activities',
   },
 };
 
@@ -53,7 +53,7 @@ export async function generateMetadata(): Promise<Metadata> {
       openGraph: {
         title: seo.title || defaultMetadata.openGraph?.title,
         description: seo.description || defaultMetadata.openGraph?.description,
-        url: `${SITE_URL.replace(/\/$/, '')}/games&activities`,
+        url: `${SITE_URL.replace(/\/$/, '')}/games-and-activities`,
         siteName: defaultMetadata.openGraph?.siteName,
         images: ogImages as any,
         locale: defaultMetadata.openGraph?.locale,

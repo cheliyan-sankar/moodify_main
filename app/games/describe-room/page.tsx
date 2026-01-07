@@ -447,7 +447,7 @@ export default function DescribeRoom() {
                     </Button>
 
                     <Button
-                      onClick={() => router.push("/games&activities")}
+                      onClick={() => router.push("/games-and-activities")}
                       className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 text-white px-6"
                     >
                       <Gamepad2 className="w-4 h-4 mr-2" />

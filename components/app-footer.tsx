@@ -29,7 +29,7 @@ export function AppFooter() {
                 </Link>
               </li>
               <li>
-                <Link href="/games&activities" className="hover:text-primary transition-colors" title="Explore wellness games and activities">
+                <Link href="/games-and-activities" className="hover:text-primary transition-colors" title="Explore wellness games and activities">
                   Wellness Games
                 </Link>
               </li>
@@ -61,7 +61,7 @@ export function AppFooter() {
                 </Link>
               </li>
               <li>
-                <Link href="/games&activities" className="hover:text-primary transition-colors" title="Browse all available games and activities">
+                <Link href="/games-and-activities" className="hover:text-primary transition-colors" title="Browse all available games and activities">
                   All Games
                 </Link>
               </li>
