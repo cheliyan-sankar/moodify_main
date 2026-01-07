@@ -7,6 +7,41 @@ function getSiteOrigin() {
   return SITE_URL.replace(/\/$/, '');
 }
 
+function normalizeToPath(raw: string) {
+  const trimmed = raw.trim();
+  if (!trimmed) return '';
+
+  // If an absolute URL was stored, keep only the pathname.
+  if (/^https?:\/\//i.test(trimmed)) {
+    try {
+      return new URL(trimmed).pathname || '/';
+    } catch {
+      // fall through
+    }
+  }
+
+  // Strip any query/hash if present.
+  const withoutQueryOrHash = trimmed.split('#')[0].split('?')[0];
+  return withoutQueryOrHash.startsWith('/') ? withoutQueryOrHash : `/${withoutQueryOrHash}`;
+}
+
+function encodePathnameForSitemap(pathname: string) {
+  // Encode each segment so reserved XML characters (like '&') become safe in the final XML.
+  // Example: /games&activities -> /games%26activities
+  return pathname
+    .split('/')
+    .map((segment, idx) => (idx === 0 ? '' : encodeURIComponent(segment)))
+    .join('/');
+}
+
+function toSitemapUrl(origin: string, rawPathOrUrl: string) {
+  const pathname = normalizeToPath(rawPathOrUrl);
+  if (!pathname) return '';
+
+  const encodedPath = encodePathnameForSitemap(pathname);
+  return new URL(encodedPath, origin).toString();
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const origin = getSiteOrigin();
 
@@ -31,7 +66,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
   const staticEntries: MetadataRoute.Sitemap = staticPaths.map((path) => ({
-    url: `${origin}${path === '/' ? '/' : path}`,
+    url: toSitemapUrl(origin, path === '/' ? '/' : path),
     lastModified: now,
     changeFrequency: 'weekly',
     priority: path === '/' ? 1.0 : 0.7,
@@ -47,12 +82,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     const mappedSeo = allSeo
       .map((seo) => {
-        const rawPath = (seo.page_url || '').trim();
-        if (!rawPath) return null;
+        const rawPathOrUrl = (seo.page_url || '').trim();
+        if (!rawPathOrUrl) return null;
 
-        // Ensure path starts with a leading slash
-        const path = rawPath.startsWith('/') ? rawPath : `/${rawPath}`;
-        const fullUrl = `${origin}${path}`;
+        const fullUrl = toSitemapUrl(origin, rawPathOrUrl);
+        if (!fullUrl) return null;
+
+        const path = new URL(fullUrl).pathname;
 
         if (seen.has(fullUrl)) return null;
         seen.add(fullUrl);
