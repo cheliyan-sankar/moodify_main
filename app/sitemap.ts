@@ -50,6 +50,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const excludedPathnames = new Set<string>([
     '/books%26Activities',
     '/games%26Activites',
+    '/dashboard',
+    '/progress',
+    '/rewards',
   ]);
 
   // Core static routes that are always part of the product
@@ -64,9 +67,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/games-and-activities',
     '/mood-assessment',
     '/all-activities',
-    '/dashboard',
-    '/progress',
-    '/rewards',
     '/privacy-policy',
   ];
 
